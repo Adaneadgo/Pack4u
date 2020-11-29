@@ -6,10 +6,29 @@ void search();
 void loginregister();
 
 typedef struct Date { int day, month, year; }Date;
-typedef struct Packege { string destination; Date takeoff; Date landing; int price; char status; }Packege;
-typedef struct Client { string name; string username; string email; string password; int phone; }Client;
-typedef struct Agent { Client agent; Client* my_clients; }Agent;
-typedef struct Manager { Agent manager; Agent* workers; }Manager;
+typedef struct Packege { string destination; Date takeoff; Date landing; int price; }Packege;
+typedef struct Order {Packege my_order; string status;}Order;
+typedef struct Client { string username; string email; string password; Order* my_orders; }Client;
+typedef struct Agent { string username; string email; string password; Client* my_clients; }Agent;
+typedef struct Manager { Agent manager; Agent* agents; }Manager;
+
+
+char* setcupon()
+{
+    char copun[4]={0};
+    cout<<"please enter 4 chars code"<<endl;
+    cin>>copun;
+    return copun;
+} 
+
+int setdiscount(char* copun, int total_price)
+{
+	if (copun==setcupon())
+	   return total_price*0.9;
+	cout<<"code not valid"<<endl;
+}
+
+
 
 void aboutus()
 {
