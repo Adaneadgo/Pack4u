@@ -1,7 +1,6 @@
 #include <iostream>
 using namespace std;
-
-// adane
+//nkjk
 //Functions
 void search();
 void loginregister();
@@ -28,8 +27,6 @@ int setdiscount(char* copun, int total_price)
 	   return total_price*0.9;
 	cout<<"code not valid"<<endl;
 }
-
-
 
 void aboutus()
 {
@@ -91,8 +88,4 @@ int main()
 		cin.get();
 	} while (ch != '4');
 	return 0;
-
-    
-
-	
 }
