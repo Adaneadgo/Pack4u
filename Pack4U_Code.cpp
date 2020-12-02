@@ -1,6 +1,6 @@
 #include <iostream>
 using namespace std;
-//nkjk
+//adnae adgo
 //Functions
 void search();
 void loginregister();
