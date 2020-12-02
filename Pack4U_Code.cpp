@@ -1,17 +1,16 @@
 #include <iostream>
 using namespace std;
-//adnae adgo
+
 //Functions
 void search();
 void loginregister();
 
 typedef struct Date { int day, month, year; }Date;
-typedef struct Packege { string destination; Date takeoff; Date landing; int price; }Packege;
-typedef struct Order {Packege my_order; string status;}Order;
+typedef struct Package { string destination; Date takeoff; Date landing; int price; }Package;
+typedef struct Order {Package my_order; string status;}Order;
 typedef struct Client { string username; string email; string password; Order* my_orders; }Client;
 typedef struct Agent { string username; string email; string password; Client* my_clients; }Agent;
 typedef struct Manager { Agent manager; Agent* agents; }Manager;
-
 
 char* setcupon()
 {
