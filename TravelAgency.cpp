@@ -6,24 +6,30 @@ using namespace std;
 
 #define Separator " "
 #define Size 20
-typedef enum UserType {client, agent, manager} UserType;
+typedef enum UserType { client, agent, manager } UserType;
 typedef enum Status { Canceled, in_process, Confirmed } Status;
 
 typedef struct User { string fullName; int id = 0; string email; string password; UserType type = client; } User;
 
 typedef struct Date { int day = 0; int month = 0; int year = 0; }Date;
-typedef struct Flight { string destanion; Date out; Date in; }Flight;
-typedef struct Hotel { string name; string addres; int rooms; }Hotel;
-typedef struct Package { int id; Flight f; Hotel h; int rate; } Package;
+typedef struct Flight { string destanion = "none"; Date out; Date in; }Flight;
+typedef struct Hotel { string name = "none"; string addres = "none"; }Hotel;
+typedef struct Package { int id; Flight f; Hotel h; int rate; int numOfRates; int price; int quantity; } Package;
 
-typedef struct Order { Date d; Package p; Status s; } Order;
+typedef struct Order { Date d; Package p; Status s = in_process; int clientId; int agentId = 0; } Order;
+
+typedef struct Request { int senderId; int agentId; string content; } Request;
+typedef struct Message { int senderId; int sentId; string content; }Message;
+typedef struct Cupon { int cuponCode; int PackageId; float discount; int quantity; }Cupon;
+
+
 
 ostream& operator<<(ostream& os, User* u);
 ostream& operator<<(ofstream& os, User* u);
 istream& operator>>(istream& f, User* u);
 istream& operator>>(ifstream& f, User* u);
 
-string strUserType(User *u);
+string strUserType(User* u);
 
 bool userRegistration(UserType t);
 bool login();
@@ -78,9 +84,9 @@ bool login()
 	cin >> id;
 	cout << "please put you password: ";
 	cin >> password;
-	
+
 	ifstream f;
-	
+
 	f.open("ClientsDB.txt");
 	if (trackUser(f, id, password))
 	{
@@ -91,7 +97,7 @@ bool login()
 	}
 
 	f.close();
-	
+
 	f.open("AgentsDB.txt");
 	if (trackUser(f, id, password))
 	{
@@ -117,9 +123,9 @@ bool writeNewUserToFile(User* newClient)
 	ofstream f;
 
 	if ((newClient->type) == client)
-		 f.open("ClientsDB.txt", ios::app);
+		f.open("ClientsDB.txt", ios::app);
 	else if ((newClient->type) == agent)
-		 f.open("AgentsDB.txt", ios::app);
+		f.open("AgentsDB.txt", ios::app);
 
 	f << newClient;
 	f.close();
@@ -128,14 +134,14 @@ bool writeNewUserToFile(User* newClient)
 void skipLine(ifstream& f, int n, char ch)
 {
 	for (int i = 0; i < n; i++)
-		f.ignore(numeric_limits<streamsize>::max(),ch);
+		f.ignore(numeric_limits<streamsize>::max(), ch);
 }
 bool trackUser(ifstream& f, int id, string password)
 {
 	string input;
 	streampos pos = f.tellg();
 
-	while (f >> input) 
+	while (f >> input)
 	{
 		if (input == to_string(id))
 		{
@@ -153,7 +159,7 @@ bool trackUser(ifstream& f, int id, string password)
 }
 
 
-string strUserType(User *u)
+string strUserType(User* u)
 {
 	switch (u->type)
 	{
@@ -171,10 +177,10 @@ string strUserType(User *u)
 ostream& operator<<(ostream& os, User* u)
 {
 	os << endl << strUserType(u);
-	os  << " Name: " << u->fullName << endl;
+	os << " Name: " << u->fullName << endl;
 	os << "Id: " << u->id << endl;
 	os << "Email: " << u->email << endl;
-	
+
 	return os;
 }
 ostream& operator<<(ofstream& f, User* u)
