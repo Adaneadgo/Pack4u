@@ -8,23 +8,24 @@
 
 using namespace std;
 
-// Enums: states/type of objects
+//Enums: states/type of objects
 typedef enum  UserType { client, agent, manager } UserType;
 typedef enum  Status { Canceled, in_process, Confirmed } Status;
 
 //Structs: user defention
 typedef struct User { int id = 0; string password; string userName; UserType type = client; } User;
-//package and order defention
+//Package and order defention
 typedef struct Date { int day = 0; int month = 0; int year = 0; }Date; // date libary **
 typedef struct Flight { string destanion = "none"; Date out; Date in; }Flight;
 typedef struct Hotel { string name = "none"; string addres = "none"; }Hotel;
-typedef struct Package { int id=0; Flight f; Hotel h; float rate = 0 ; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
-typedef struct Order { Date date; int packageId=0; Status status = in_process; int clientId = 0; int agentId = 0; } Order; // redfine dfd - order approved only if agent accept
-// other structs
-typedef struct Request { int senderId; int agentId = 0; string content; } Request;
-typedef struct Message { int senderId; int sentId; string content; }Message;
-typedef struct Cupon { int cuponCode; int PackageId; float discount; int quantity; }Cupon; /// date or quantity 
+typedef struct Package { int id = 0; Flight f; Hotel h; float rate = 0; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
+typedef struct Order { Date date; int packageId; Status status = in_process; int clientId; int agentId = 0; } Order; // redfine dfd - order approved only if agent accept
 
+//Other structs
+typedef struct Message { User from; string message; }Message;
+typedef struct Cupon { int cuponCode; float discount; Date expiry; }Cupon; /// date or quantity 
+
+// Operators: read/write to/from file
 // Operators: read/write to/from file
 ostream& operator<<(ofstream& os, User& u);
 istream& operator>>(ifstream& f, User& u);
@@ -42,10 +43,7 @@ istream& operator>>(ifstream& f, Date& d);
 ostream& operator<<(ostream& os, Date& d);
 istream& operator>>(istream& is, Date& d);
 
-
-
-
-// Features: 1.
+//Features: 1.
 bool logOrRegist();
 bool userRegistration(UserType t);
 bool login();
@@ -53,28 +51,20 @@ bool login();
 bool makeAnOrder(Package p);
 //3.
 bool search();
-//4.
-bool trackOrder();
-
-// Asisnt function: files
-bool writeNewUserToFile(User& newClient);
+//Asisnt function: files
+bool writeNewUserToFile(User& newUser);
 void skipLines(ifstream& f, int n);
-//others
+//Others
 string strUserType(UserType& u);
 string strStatus(Status& s);
 Date today();
+void agentMenu();
+void managerMenu();
 
 
 User* user = nullptr; // The global logged user
-
-//Main
-int main()
-{
-	trackOrder();
-	
-}
-
-
+Package* package = nullptr;
+Message* message = nullptr;
 
 string strUserType(UserType& t)
 {
@@ -104,7 +94,6 @@ string strStatus(Status& s)
 		return "";
 	}
 }
-
 Date today()
 {
 	time_t t = time(NULL);
@@ -119,26 +108,31 @@ bool isDateVaild(Date d)
 		return false;
 	else if (d.month < dn.month)
 		return false;
-	else if(d.day < dn.day)
+	else if (d.day < dn.day)
 		return false;
 
 	return true;
 }
-
-bool writeNewUserToFile(User& newClient)
+//Data basies
+bool writeNewUserToFile(User& newUser)
 {
-	ofstream f("UsersDB.txt",ios::app);
-	f << newClient;
+	ofstream f("UsersDB.txt", ios::app);
+	f << newUser;
 	f.close();
 	return 1;
 }
+//bool writeNewPackageToFile(Package& newPackage)
+//{
+//	ofstream f("PackagesDB.txt", ios::app);
+//	f << newPackage;
+//	f.close();
+//	return 1;
+//}
 void skipLines(ifstream& f, int n)
 {
 	for (int i = 0; i < n; i++)
 		f.ignore(numeric_limits<streamsize>::max(), '\n');
 }
-
-
 bool logOrRegist()
 {
 
@@ -161,17 +155,17 @@ bool logOrRegist()
 bool userRegistration(UserType t)
 {
 	// create the new user
-	User* newClient = new User;
+	User* newUser = new User;
 	cout << "put the following details:" << endl;
-	cin >> *newClient;
-	newClient->type = t;
+	cin >> *newUser;
+	newUser->type = t;
 
 	// write the new cline to the DB
-	writeNewUserToFile(*newClient);
+	writeNewUserToFile(*newUser);
 
 	//login
 	if (!user)
-		user = newClient;
+		user = newUser;
 
 	//if everything went well
 	return true;
@@ -192,7 +186,9 @@ bool login()
 	while (f >> *user)
 	{
 		if (user->id == id && user->password == password)
-		{f.close(); return true; }
+		{
+			f.close(); return true;
+		}
 	}
 
 	f.close();
@@ -211,15 +207,12 @@ bool search()
 bool makeAnOrder(Package p)
 {
 	if (!user)
-	{ cout << "not logged" << endl; logOrRegist(); }
-	
+	{
+		cout << "not logged" << endl; logOrRegist();
+	}
 	Order order = { today(), p.id, in_process, user->id, 0 };
-	cout << endl << "Summary"<<endl << order << endl << "{package details}" << endl;
-	
-	ofstream f("OrdersDB.txt",ios::app);
-	f << order;
-	f.close();
-
+	cout << endl << "Summary: " << order << endl << "{package details}" << endl;
+	ofstream f("Orders");
 	return 1;
 }
 bool trackOrder()
@@ -232,13 +225,7 @@ bool trackOrder()
 	for (int i = 0; i < arr.size(); i++)
 		cout << arr[i] << endl;
 
-
-
-	
-
-
 }
-
 ostream& operator<<(ofstream& f, User& u)
 {
 	f << u.id << endl;
@@ -292,12 +279,12 @@ istream& operator>>(ifstream& f, Status& u)
 
 ostream& operator<<(ostream& os, Order& o)
 {
-	os << "Date: " <<o.date << endl;
+	os << "Date: " << o.date << endl;
 	os << "Client Id: " << o.clientId << endl;
 	os << o.packageId << endl;
 	os << "Order status: " << strStatus(o.status);
 	return os;
-		
+
 }
 ostream& operator<<(ofstream& f, Order& o)
 {
@@ -353,4 +340,98 @@ istream& operator>>(istream& is, Date& d)
 	is >> d.year;
 	return is;
 }
+ostream& operator<<(ostream& os, Cupon& c)
+{
+	os << "Cupon code: " << c.cuponCode << endl;
+	os << "Discount amount: " << c.discount << endl;
+	os << "Expiry date: " << c.expiry << endl;
+	return os;
+}
+istream& operator>>(istream& is, Cupon& c)
+{
+	cout << "Hello manager, please enter code for discount (4 digits): " << endl;
+	is >> c.cuponCode;
+	cout << "Please enter discount amount: " << endl;
+	is >> c.discount;
+	cout << "Enter day, month and year for expiry date: " << endl;
+	is >> c.expiry;
+	return is;
+}
+// write the new cline to the DB
+//writeNewUserToFile(&newUser);
+//Agent menu
+void removeAgentFromFile()
+{
+
+}
+void agentMenu()
+{
+	int choice;
+	do {
+		cout << "\n\n\t1.View packages";
+		cout << "\n\n\t2.View client";
+		cout << "\n\n\t3.Message box";
+		cout << "\n\n\t4.Exit";
+
+		cin >> choice;
+		switch (choice)
+		{
+		case 1:
+			cout << "\n\n\tEmail: pack4u@mail.com\n\tPhone: 1-700-800-800";
+			break;
+
+		case 2:
+			//call login register func
+			break;
+		case 3:
+			break;
+
+		default:
+			cout << "\n\n\tTRY AGAIN";
+			break;
+		}
+	} while (choice != 4);
+}
+//Manger menu
+void managerMenu()
+{
+	int choice;
+	Cupon c;
+	do {
+		cout << "\n\n\t1.View Agent Options";
+		cout << "\n\n\t2.Add an agent";
+		cout << "\n\n\t3.Remove an agent";
+		cout << "\n\n\t4.Creat discaunt cupon";
+		cout << "\n\n\t5.Exit" << endl;
+		cin >> choice;
+		switch (choice)
+		{
+		case 1: agentMenu();
+			break;
+		case 2: userRegistration(agent);
+			break;
+		case 3: removeAgentFromFile();
+			break;
+		case 4:
+			cout << "creating a cupon:" << endl;
+			cin >> c;
+			//send the cupon to client
+			//call login register func
+			break;
+
+		default:
+			cout << "\n\n\tTRY AGAIN";
+			break;
+		}
+	} while (choice != 5);
+}
+
+
+//Main
+int main()
+{
+
+	managerMenu();
+}
+
 
