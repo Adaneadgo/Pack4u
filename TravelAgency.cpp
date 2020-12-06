@@ -67,8 +67,8 @@ bool writeNewUserToFile(User& newUser);
 bool writeNewPackageToFile(Package& newPackage);
 void skipLines(ifstream& f, int n);
 //Menu
-void agentMenu()
-void managerMenu()
+void agentMenu();
+void managerMenu();
 //Others
 string strUserType(UserType& u);
 string strStatus(Status& s);
@@ -185,6 +185,19 @@ bool userRegistration(UserType t)
 	//if everything went well
 	return true;
 
+}
+bool addPackage()
+{
+	// create the new user
+	Package* newPackage = new Package;
+	cout << "put the following details:" << endl;
+	cin >> *newPackage;
+
+	// write the new cline to the DB
+	writeNewPackageToFile(*newPackage);
+
+	//if everything went well
+	return true;
 }
 bool login()
 {
@@ -469,27 +482,34 @@ void agentMenu()
 	do {
 		cout << "\n\n\t1.View packages";
 		cout << "\n\n\t2.View client";
-		cout << "\n\n\t3.Message box";
-		cout << "\n\n\t4.Exit";
+		cout << "\n\n\t3.Add a package";
+		cout << "\n\n\t4.Remove a package";
+		cout << "\n\n\t5.Message box";
+		cout << "\n\n\t6.Exit";
 
 		cin >> choice;
 		switch (choice)
 		{
 		case 1:
-			cout << "\n\n\tEmail: pack4u@mail.com\n\tPhone: 1-700-800-800";
+			//view package
 			break;
-
 		case 2:
-			//call login register func
+			//view client
 			break;
 		case 3:
-			break;
 
+			break;
+		case 4:
+			cout << "\n\n\tEmail: pack4u@mail.com\n\tPhone: 1-700-800-800";
+			break;
+		case 5:
+			//call login register func
+			break;
 		default:
 			cout << "\n\n\tTRY AGAIN";
 			break;
 		}
-	} while (choice != 4);
+	} while (choice != 6);
 }
 //Manger menu
 void managerMenu()
