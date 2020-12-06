@@ -260,7 +260,6 @@ istream& operator>>(istream& is, User& u)
 	is >> u.userName;
 	return is;
 }
-
 istream& operator>>(ifstream& f, UserType& u)
 {
 	int i;
@@ -275,8 +274,6 @@ istream& operator>>(ifstream& f, Status& u)
 	u = Status(i);
 	return f;
 }
-
-
 ostream& operator<<(ostream& os, Order& o)
 {
 	os << "Date: " << o.date << endl;
@@ -305,7 +302,6 @@ istream& operator>>(ifstream& f, Order& o)
 
 	return f;
 }
-
 ostream& operator<<(ofstream& f, Date& d)
 {
 	f << d.day << ".";
@@ -356,6 +352,95 @@ istream& operator>>(istream& is, Cupon& c)
 	cout << "Enter day, month and year for expiry date: " << endl;
 	is >> c.expiry;
 	return is;
+}
+ostream& operator<<(ostream& os, Package& p)
+{
+	os << "Package id: " << p.id << endl;
+	os << "Package price: " << p.price << endl;
+	os << "Package quantity: " << p.quantity << endl;
+	os << "Flight destination: " << p.f.destination << endl;
+	os << "Flight departure: " << p.f.out << endl;
+	os << "Flight return " << p.f.in << endl;
+	os << "Hotel name: " << p.h.name << endl;
+	os << "Hotel Address: " << p.h.address << endl;
+	os << "Package rating: " << p.rate << " out of: " << p.numOfRates << " Ratings." << endl;
+	return os;
+}
+ofstream& operator<<(ofstream& f, Package& p)
+{
+	f << p.id << endl;
+	f << p.f.destination << endl;
+	f << p.f.os << endl;
+	f << p.f.in << endl;
+	f << p.h.name << endl;
+	f << p.h.address << endl;
+	f << p.rate << endl;
+	f << p.numOfRates << endl;
+	f << p.price << endl;
+	f << p.quantity << endl;
+	return f;
+}
+istream& operator>>(istream& is, Package* p)
+{
+	char ch;
+	cout << "Enter package id: ";
+	is >> p.id;
+	do
+	{
+		cout << "Include flight? Y/N" << endl;
+		cin >> ch;
+		if (ch == 'Y')
+		{
+			cout << "Enter flight destination: ";
+			is >> p.f.destination;
+			cout << "Enter flight departure date:" << endl;
+			is >> p.f.out;
+			cout << "Enter flight return date:" << endl;
+			is >> p.f.in;
+		}
+		else if (ch == 'N')
+			break;
+		else
+			cout << "Bad input! Try again." << endl;
+	} while (ch != 'Y');
+	do
+	{
+		cout << "Include hotel? Y/N" << endl;
+		cin >> ch;
+		if (ch == 'Y')
+		{
+			cout << "Hotel name: ";
+			in >> p.h.name;
+
+			cout << "Hotel address: ";
+			in >> p.h.address;
+
+		}
+		else if (ch == 'N')
+			break;
+		else
+			cout << "Bad input! Try again." << endl;
+
+	} while (ch != 'Y');
+	cout << "Enter package price: ";
+	is >> p.price;
+	cout << "Enter package quantity: ";
+	is >> p.quantity;
+	return is;
+}
+ifstream& operator>>(ifstream& f, Package& p)
+{
+	f >> p.id;
+	f >> p.f.destination;
+	f >> p.f.os;
+	f >> p.f.is;
+	f >> p.h.name;
+	f >> p.h.address;
+	f >> p.rate;
+	f >> p.numOfRates;
+	f >> p.price;
+	f >> p.quantity;
+	return f;
 }
 // write the new cline to the DB
 //writeNewUserToFile(&newUser);
