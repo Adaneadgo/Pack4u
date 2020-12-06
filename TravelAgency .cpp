@@ -3,6 +3,7 @@
 #include<fstream>
 #include<string>
 #include<ctime>
+#include<vector>
 
 
 using namespace std;
@@ -19,29 +20,29 @@ typedef struct Flight { string destanion = "none"; Date out; Date in; }Flight;
 typedef struct Hotel { string name = "none"; string addres = "none"; }Hotel;
 typedef struct Package { int id = 0; Flight f; Hotel h; float rate = 0; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
 typedef struct Order { Date date; int packageId; Status status = in_process; int clientId; int agentId = 0; } Order; // redfine dfd - order approved only if agent accept
-//Other structs
 
+//Other structs
 typedef struct Message { User from; string message; }Message;
 typedef struct Cupon { int cuponCode; float discount; Date expiry; }Cupon; /// date or quantity 
 
 // Operators: read/write to/from file
-//User
+// Operators: read/write to/from file
 ostream& operator<<(ofstream& os, User& u);
 istream& operator>>(ifstream& f, User& u);
 istream& operator>>(ifstream& f, UserType& u);
-//Date
-ostream& operator<<(ofstream& f, Date& d);
-istream& operator<<(ifstream& f, Date& d);
-
-//Read/write to/from console
-//User
+//read/write to/from console
 ostream& operator<<(ostream& os, User& u);
-istream& operator>>(istream& is, User& u);
+istream& operator>>(istream& f, User& u);
 // Order
 ostream& operator<<(ostream& os, Order& o);
-//Date
+ostream& operator<<(ofstream& f, Order& o);
+istream& operator>>(ifstream& f, Order& o);
+//date
+ostream& operator<<(ofstream& f, Date& d);
+istream& operator>>(ifstream& f, Date& d);
 ostream& operator<<(ostream& os, Date& d);
 istream& operator>>(istream& is, Date& d);
+
 //Features: 1.
 bool logOrRegist();
 bool userRegistration(UserType t);
@@ -214,6 +215,17 @@ bool makeAnOrder(Package p)
 	ofstream f("Orders");
 	return 1;
 }
+bool trackOrder()
+{
+	vector<Order> arr;
+	Order temp;
+	ifstream f("OrdersDB.txt");
+	while (f >> temp)
+		arr.push_back(temp);
+	for (int i = 0; i < arr.size(); i++)
+		cout << arr[i] << endl;
+
+}
 ostream& operator<<(ofstream& f, User& u)
 {
 	f << u.id << endl;
@@ -233,7 +245,7 @@ istream& operator>>(ifstream& f, User& u)
 ostream& operator<<(ostream& os, User& u)
 {
 	os << endl << strUserType(u.type);
-	os << "Name: " << u.userName << endl;
+	os << " Name: " << u.userName << endl;
 	os << "Id: " << u.id << endl;
 	return os;
 }
@@ -242,12 +254,13 @@ istream& operator>>(istream& is, User& u)
 	// getting the new user client details
 	cout << "Id: ";
 	is >> u.id;
-	cout << "Password: ";
+	cout << "Password ";
 	is >> u.password;
 	cout << "UserName: ";
 	is >> u.userName;
 	return is;
 }
+
 istream& operator>>(ifstream& f, UserType& u)
 {
 	int i;
@@ -255,12 +268,21 @@ istream& operator>>(ifstream& f, UserType& u)
 	u = UserType(i);
 	return f;
 }
+istream& operator>>(ifstream& f, Status& u)
+{
+	int i;
+	f >> i;
+	u = Status(i);
+	return f;
+}
+
+
 ostream& operator<<(ostream& os, Order& o)
 {
 	os << "Date: " << o.date << endl;
 	os << "Client Id: " << o.clientId << endl;
 	os << o.packageId << endl;
-	os << "Order status: " << strStatus(o.status) << endl;
+	os << "Order status: " << strStatus(o.status);
 	return os;
 
 }
@@ -268,33 +290,30 @@ ostream& operator<<(ofstream& f, Order& o)
 {
 	f << o.date << endl;
 	f << o.clientId << endl;
-	f << "Package details: " << endl;
+	f << o.packageId << endl;
 	f << o.status << endl;
 	f << o.agentId << endl;
 	return f;
 }
-ostream& operator<<(ostream& os, Date& d)
+istream& operator>>(ifstream& f, Order& o)
 {
-	os << d.day << ".";
-	os << d.month << ".";
-	os << d.year << endl;
-	return os;
+	f >> o.date;
+	f >> o.clientId;
+	f >> o.packageId;
+	f >> o.status;
+	f >> o.agentId;
+
+	return f;
 }
-istream& operator>>(istream& is, Date& d)
-{
-	is >> d.day;
-	is >> d.month;
-	is >> d.year;
-	return is;
-}
+
 ostream& operator<<(ofstream& f, Date& d)
 {
 	f << d.day << ".";
 	f << d.month << ".";
-	f << d.year << endl;
+	f << d.year;
 	return f;
 }
-istream& operator<<(ifstream& f, Date& d)
+istream& operator>>(ifstream& f, Date& d)
 {
 	char dot;//for save dot
 	f >> d.day;
@@ -303,6 +322,23 @@ istream& operator<<(ifstream& f, Date& d)
 	f >> dot;
 	f >> d.year;
 	return f;
+}
+ostream& operator<<(ostream& os, Date& d)
+{
+	os << d.day << ".";
+	os << d.month << ".";
+	os << d.year;
+	return os;
+}
+istream& operator>>(istream& is, Date& d)
+{
+	cout << "day: ";
+	is >> d.day;
+	cout << "month: ";
+	is >> d.month;
+	cout << "year: ";
+	is >> d.year;
+	return is;
 }
 ostream& operator<<(ostream& os, Cupon& c)
 {
