@@ -36,7 +36,7 @@ istream& operator<<(ifstream& f, Date& d);
 //Read/write to/from console
 //User
 ostream& operator<<(ostream& os, User& u);
-istream& operator>>(istream& f, User& u);
+istream& operator>>(istream& is, User& u);
 // Order
 ostream& operator<<(ostream& os, Order& o);
 //Date
@@ -57,6 +57,7 @@ void skipLines(ifstream& f, int n);
 string strUserType(UserType& u);
 string strStatus(Status& s);
 Date today();
+void agentMenu();
 
 
 User* user = nullptr; // The global logged user
@@ -142,17 +143,17 @@ bool logOrRegist()
 bool userRegistration(UserType t)
 {
 	// create the new user
-	User* newClient = new User;
+	User* newUser = new User;
 	cout << "put the following details:" << endl;
-	cin >> *newClient;
+	cin >> *newUser;
 	newClient->type = t;
 
 	// write the new cline to the DB
-	writeNewUserToFile(*newClient);
+	writeNewUserToFile(*newUser);
 
 	//login
 	if (!user)
-		user = newClient;
+		user = newUser;
 
 	//if everything went well
 	return true;
@@ -309,6 +310,64 @@ istream& operator>>(istream& is, Cupon& c)
 	is >> c.expiry;
 	return is;
 }
+// write the new cline to the DB
+writeNewUserToFile(*newClient);
+//Agent menu
+void agentMenu()
+{
+	int choice;
+	do {
+		cout << "\n\n\t1.View packages";
+		cout << "\n\n\t2.View client";
+		cout << "\n\n\t3.Message box";
+		cout << "\n\n\t4.Exit";
+
+		cin >> choice;
+		switch (choice)
+		{
+		case 1:
+			cout << "\n\n\tEmail: pack4u@mail.com\n\tPhone: 1-700-800-800";
+			break;
+
+		case 2:
+			//call login register func
+			break;
+		case 3:
+			break;
+
+		default:
+			cout << "\n\n\tTRY AGAIN";
+			break;
+		}
+	} while (choice != 4);
+}
+//Manger menu
+void manager()
+{
+	int choice;
+	do {
+		cout << "\n\n\t1.View Agent Options";
+		cout << "\n\n\t2.View agents";
+		cout << "\n\n\t3.Creat discount";
+		cout << "\n\n\t.Exit";
+		cin >> choice;
+		switch (choice)
+		{
+		case 1: agentMenu();
+			break;
+
+		case 2:
+			//call login register func
+			break;
+
+		default:
+			cout << "\n\n\tTRY AGAIN";
+			break;
+		}
+	} while (choice != 3);
+}
+
+
 
 //Main
 int main()
