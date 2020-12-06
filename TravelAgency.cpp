@@ -16,8 +16,8 @@ typedef enum  Status { Canceled, in_process, Confirmed } Status;
 typedef struct User { int id = 0; string password; string userName; UserType type = client; } User;
 //Package and order defention
 typedef struct Date { int day = 0; int month = 0; int year = 0; }Date; // date libary **
-typedef struct Flight { string destanion = "none"; Date out; Date in; }Flight;
-typedef struct Hotel { string name = "none"; string addres = "none"; }Hotel;
+typedef struct Flight { string destination = "none"; Date out; Date in; }Flight;
+typedef struct Hotel { string name = "none"; string address = "none"; }Hotel;
 typedef struct Package { int id = 0; Flight f; Hotel h; float rate = 0; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
 typedef struct Order { Date date; int packageId; Status status = in_process; int clientId; int agentId = 0; }Order; // redfine dfd - order approved only if agent accept
 //Other structs
@@ -175,13 +175,13 @@ bool logOrRegist()
 bool userRegistration(UserType t)
 {
 	// create the new user
-	User* newUser = new User;
-	cout << "put the following details:" << endl;
-	cin >> *newUser;
+	User newUser;
+	cout << "put the following details: " << endl;
+	cin >> newUser;
 	newUser->type = t;
 
 	// write the new cline to the DB
-	writeNewUserToFile(*newUser);
+	writeNewUserToFile(newUser);
 
 	//login
 	if (!user)
@@ -193,12 +193,12 @@ bool userRegistration(UserType t)
 bool addPackage()
 {
 	// create the new user
-	Package* newPackage = new Package;
-	cout << "put the following details:" << endl;
-	cin >> *newPackage;
+	Package newPackage;
+	cout << "put the following details: " << endl;
+	cin >> newPackage;
 
 	// write the new cline to the DB
-	writeNewPackageToFile(*newPackage);
+	writeNewPackageToFile(newPackage);
 
 	//if everything went well
 	return true;
@@ -390,22 +390,22 @@ ostream& operator<<(ostream& os, Package& p)
 	os << "Package id: " << p.id << endl;
 	os << "Package price: " << p.price << endl;
 	os << "Package quantity: " << p.quantity << endl;
-	os << "Flight destination: " << p.f.destanion << endl;
+	os << "Flight destination: " << p.f.destination << endl;
 	os << "Flight departure: " << p.f.out << endl;
 	os << "Flight return " << p.f.in << endl;
 	os << "Hotel name: " << p.h.name << endl;
-	os << "Hotel Address: " << p.h.addres << endl;
+	os << "Hotel Address: " << p.h.address << endl;
 	os << "Package rating: " << p.rate << " out of: " << p.numOfRates << " Ratings." << endl;
 	return os;
 }
 ofstream& operator<<(ofstream& f, Package& p)
 {
 	f << p.id << endl;
-	f << p.f.destanion << endl;
+	f << p.f.destination << endl;
 	f << p.f.out << endl;
 	f << p.f.in << endl;
 	f << p.h.name << endl;
-	f << p.h.addres << endl;
+	f << p.h.address << endl;
 	f << p.rate << endl;
 	f << p.numOfRates << endl;
 	f << p.price << endl;
@@ -424,7 +424,7 @@ istream& operator>>(istream& is, Package& p)
 		if (ch == 'Y')
 		{
 			cout << "Enter flight destination: ";
-			is >> p.f.destanion;
+			is >> p.f.destination;
 			cout << "Enter flight departure date:" << endl;
 			is >> p.f.out;
 			cout << "Enter flight return date:" << endl;
@@ -445,7 +445,7 @@ istream& operator>>(istream& is, Package& p)
 			is >> p.h.name;
 
 			cout << "Hotel address: ";
-			is >> p.h.addres;
+			is >> p.h.address;
 
 		}
 		else if (ch == 'N')
@@ -463,11 +463,11 @@ istream& operator>>(istream& is, Package& p)
 ifstream& operator>>(ifstream& f, Package& p)
 {
 	f >> p.id;
-	f >> p.f.destanion;
+	f >> p.f.destination;
 	f >> p.f.out;
 	f >> p.f.in;
 	f >> p.h.name;
-	f >> p.h.addres;
+	f >> p.h.address;
 	f >> p.rate;
 	f >> p.numOfRates;
 	f >> p.price;
@@ -477,21 +477,18 @@ ifstream& operator>>(ifstream& f, Package& p)
 ostream& operator<<(ofstream& f, Message& m)
 {
 	f << "From: " << m.from << endl;
-	f << "To: " << int(m.type) << endl;
 	f << "Body message: " << m.message << endl;
 	return f;
 }
 istream& operator>>(ifstream& f, Message& m)
 {
 	f >> m.from;
-	f >> m.type;
 	f >> m.message;
 	return f;
 }
 ostream& operator<<(ostream& os, Message& m)
 {
 	os << "From (user name): " << m.from << endl;
-	os << "To: " << int(m.type) << endl;
 	os << "Body message: " << m.message;
 	return os;
 }
@@ -499,8 +496,6 @@ istream& operator>>(istream& is, Message& m)
 {
 	cout << "From: " << endl;
 	is >> m.from;
-	cout << "To: " << endl;
-	//is >> int(m.type); //העמסת אופרטורים לטייפ
 	cout << "Boody message: ";
 	is >> m.message;
 	return is;
