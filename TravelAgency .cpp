@@ -21,7 +21,7 @@ typedef struct Package { int id = 0; Flight f; Hotel h; float rate = 0; int numO
 typedef struct Order { Date date; int packageId; Status status = in_process; int clientId; int agentId = 0; } Order; // redfine dfd - order approved only if agent accept
 //Other structs
 
-typedef struct Message { User from; string message; }Message;
+typedef struct Message { string from; string message; }Message;
 typedef struct Cupon { int cuponCode; float discount; Date expiry; }Cupon; /// date or quantity 
 
 // Operators: read/write to/from file
