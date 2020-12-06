@@ -74,7 +74,7 @@ string strUserType(UserType& u);
 string strStatus(Status& s);
 Date today();
 bool isDateVaild(Date d);
-void removeAgentFromFile()
+void removeAgentFromFile();
 
 /*------------------------------------------------------------------------*/
 User* user = nullptr; // The global logged user
@@ -136,13 +136,13 @@ bool writeNewUserToFile(User& newUser)
 	f.close();
 	return 1;
 }
-//bool writeNewPackageToFile(Package& newPackage)
-//{
-//	ofstream f("PackagesDB.txt", ios::app);
-//	f << newPackage;
-//	f.close();
-//	return 1;
-//}
+bool writeNewPackageToFile(Package& newPackage)
+{
+	ofstream f("PackagesDB.txt", ios::app);
+	f << newPackage;
+	f.close();
+	return 1;
+}
 void skipLines(ifstream& f, int n)
 {
 	for (int i = 0; i < n; i++)
@@ -458,7 +458,6 @@ ifstream& operator>>(ifstream& f, Package& p)
 	return f;
 }
 // write the new cline to the DB
-//writeNewUserToFile(&newUser);
 //Agent menu
 void removeAgentFromFile()
 {
