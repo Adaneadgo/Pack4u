@@ -495,7 +495,7 @@ void agentMenu()
 void managerMenu()
 {
 	int choice;
-	Cupon c;
+	Cupon cop;
 	do {
 		cout << "\n\n\t1.View Agent Options";
 		cout << "\n\n\t2.Add an agent";
@@ -513,7 +513,7 @@ void managerMenu()
 			break;
 		case 4:
 			cout << "creating a cupon:" << endl;
-			cin >> c;
+			cin >> cop;
 			//send the cupon to client
 			//call login register func
 			break;
