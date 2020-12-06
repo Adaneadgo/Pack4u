@@ -516,7 +516,6 @@ void managerMenu()
 int main()
 {
 
-	managerMenu();
 }
 
 
