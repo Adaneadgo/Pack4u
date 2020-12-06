@@ -7,34 +7,42 @@
 
 using namespace std;
 
-// Enums: states/type of objects
+//Enums: states/type of objects
 typedef enum  UserType { client, agent, manager } UserType;
 typedef enum  Status { Canceled, in_process, Confirmed } Status;
 
 //Structs: user defention
 typedef struct User { int id = 0; string password; string userName; UserType type = client; } User;
-//package and order defention
+//Package and order defention
 typedef struct Date { int day = 0; int month = 0; int year = 0; }Date; // date libary **
 typedef struct Flight { string destanion = "none"; Date out; Date in; }Flight;
 typedef struct Hotel { string name = "none"; string addres = "none"; }Hotel;
-typedef struct Package { int id=0; Flight f; Hotel h; float rate = 0 ; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
+typedef struct Package { int id = 0; Flight f; Hotel h; float rate = 0; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
 typedef struct Order { Date date; int packageId; Status status = in_process; int clientId; int agentId = 0; } Order; // redfine dfd - order approved only if agent accept
-// other structs
+//Other structs
 typedef struct Request { int senderId; int agentId = 0; string content; } Request;
 typedef struct Message { int senderId; int sentId; string content; }Message;
-typedef struct Cupon { int cuponCode; int PackageId; float discount; int quantity; }Cupon; /// date or quantity 
+typedef struct Cupon { int cuponCode; float discount; Date expiry; }Cupon; /// date or quantity 
 
 // Operators: read/write to/from file
+//User
 ostream& operator<<(ofstream& os, User& u);
 istream& operator>>(ifstream& f, User& u);
 istream& operator>>(ifstream& f, UserType& u);
-//read/write to/from console
+//Date
+ostream& operator<<(ofstream& f, Date& d);
+istream& operator<<(ifstream& f, Date& d);
+
+//Read/write to/from console
+//User
 ostream& operator<<(ostream& os, User& u);
 istream& operator>>(istream& f, User& u);
 // Order
 ostream& operator<<(ostream& os, Order& o);
-
-// Features: 1.
+//Date
+ostream& operator<<(ostream& os, Date& d);
+istream& operator>>(istream& is, Date& d);
+//Features: 1.
 bool logOrRegist();
 bool userRegistration(UserType t);
 bool login();
@@ -42,28 +50,16 @@ bool login();
 bool makeAnOrder(Package p);
 //3.
 bool search();
-
-// Asisnt function: files
+//Asisnt function: files
 bool writeNewUserToFile(User& newClient);
 void skipLines(ifstream& f, int n);
-//others
+//Others
 string strUserType(UserType& u);
 string strStatus(Status& s);
 Date today();
 
 
 User* user = nullptr; // The global logged user
-
-
-//Main
-int main()
-{
-	search();
-
-
-}
-
-
 
 string strUserType(UserType& t)
 {
@@ -93,7 +89,6 @@ string strStatus(Status& s)
 		return "";
 	}
 }
-
 Date today()
 {
 	time_t t = time(NULL);
@@ -108,15 +103,14 @@ bool isDateVaild(Date d)
 		return false;
 	else if (d.month < dn.month)
 		return false;
-	else if(d.day < dn.day)
+	else if (d.day < dn.day)
 		return false;
 
 	return true;
 }
-
 bool writeNewUserToFile(User& newClient)
 {
-	ofstream f("UsersDB.txt",ios::app);
+	ofstream f("UsersDB.txt", ios::app);
 	f << newClient;
 	f.close();
 	return 1;
@@ -126,8 +120,6 @@ void skipLines(ifstream& f, int n)
 	for (int i = 0; i < n; i++)
 		f.ignore(numeric_limits<streamsize>::max(), '\n');
 }
-
-
 bool logOrRegist()
 {
 
@@ -181,7 +173,9 @@ bool login()
 	while (f >> *user)
 	{
 		if (user->id == id && user->password == password)
-		{f.close(); return true; }
+		{
+			f.close(); return true;
+		}
 	}
 
 	f.close();
@@ -200,16 +194,14 @@ bool search()
 bool makeAnOrder(Package p)
 {
 	if (!user)
-	{ cout << "not logged" << endl; logOrRegist(); }
-	
+	{
+		cout << "not logged" << endl; logOrRegist();
+	}
 	Order order = { today(), p.id, in_process, user->id, 0 };
 	cout << endl << "Summary: " << order << endl << "{package details}" << endl;
-	
 	ofstream f("Orders");
-
 	return 1;
 }
-
 ostream& operator<<(ofstream& f, User& u)
 {
 	f << u.id << endl;
@@ -229,7 +221,7 @@ istream& operator>>(ifstream& f, User& u)
 ostream& operator<<(ostream& os, User& u)
 {
 	os << endl << strUserType(u.type);
-	os << " Name: " << u.userName << endl;
+	os << "Name: " << u.userName << endl;
 	os << "Id: " << u.id << endl;
 	return os;
 }
@@ -238,13 +230,12 @@ istream& operator>>(istream& is, User& u)
 	// getting the new user client details
 	cout << "Id: ";
 	is >> u.id;
-	cout << "Password ";
+	cout << "Password: ";
 	is >> u.password;
 	cout << "UserName: ";
 	is >> u.userName;
 	return is;
 }
-
 istream& operator>>(ifstream& f, UserType& u)
 {
 	int i;
@@ -252,25 +243,81 @@ istream& operator>>(ifstream& f, UserType& u)
 	u = UserType(i);
 	return f;
 }
-
 ostream& operator<<(ostream& os, Order& o)
 {
-	os << "Date: " << "dd.mm.yyyy"<< endl;
+	os << "Date: " << o.date << endl;
 	os << "Client Id: " << o.clientId << endl;
 	os << o.packageId << endl;
 	os << "Order status: " << strStatus(o.status) << endl;
 	return os;
-		
+
 }
 ostream& operator<<(ofstream& f, Order& o)
 {
-	f << "dd.mm.yyyy" << endl;
+	f << o.date << endl;
 	f << o.clientId << endl;
-	f << "package details" << endl;
+	f << "Package details: " << endl;
 	f << o.status << endl;
 	f << o.agentId << endl;
 	return f;
 }
+ostream& operator<<(ostream& os, Date& d)
+{
+	os << d.day << ".";
+	os << d.month << ".";
+	os << d.year << endl;
+	return os;
+}
+istream& operator>>(istream& is, Date& d)
+{
+	is >> d.day;
+	is >> d.month;
+	is >> d.year;
+	return is;
+}
+ostream& operator<<(ofstream& f, Date& d)
+{
+	f << d.day << ".";
+	f << d.month << ".";
+	f << d.year << endl;
+	return f;
+}
+istream& operator<<(ifstream& f, Date& d)
+{
+	char dot;//for save dot
+	f >> d.day;
+	f >> dot;
+	f >> d.month;
+	f >> dot;
+	f >> d.year;
+	return f;
+}
+ostream& operator<<(ostream& os, Cupon& c)
+{
+	os << "Cupon code: " << c.cuponCode << endl;
+	os << "Discount amount: " << c.discount << endl;
+	os << "Expiry date: " << c.expiry << endl;
+	return os;
+}
+istream& operator>>(istream& is, Cupon& c)
+{
+	cout << "Hello manager, please enter code for discount (4 digits): " << endl;
+	is >> c.cuponCode;
+	cout << "Please enter discount amount: " << endl;
+	is >> c.discount;
+	cout << "Enter day, month and year for expiry date: " << endl;
+	is >> c.expiry;
+	return is;
+}
 
+//Main
+int main()
+{
+	Cupon c;
+	cin >> c;
+	cout << c;
+	return 0;
+
+}
 
 
