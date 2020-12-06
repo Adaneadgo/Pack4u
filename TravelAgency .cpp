@@ -20,8 +20,8 @@ typedef struct Hotel { string name = "none"; string addres = "none"; }Hotel;
 typedef struct Package { int id = 0; Flight f; Hotel h; float rate = 0; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
 typedef struct Order { Date date; int packageId; Status status = in_process; int clientId; int agentId = 0; } Order; // redfine dfd - order approved only if agent accept
 //Other structs
-typedef struct Request { int senderId; int agentId = 0; string content; } Request;
-typedef struct Message { int senderId; int sentId; string content; }Message;
+
+typedef struct Message { User from; string message; }Message;
 typedef struct Cupon { int cuponCode; float discount; Date expiry; }Cupon; /// date or quantity 
 
 // Operators: read/write to/from file
@@ -58,9 +58,12 @@ string strUserType(UserType& u);
 string strStatus(Status& s);
 Date today();
 void agentMenu();
+void managerMenu();
 
 
 User* user = nullptr; // The global logged user
+Package* package = nullptr;
+Message* message = nullptr;
 
 string strUserType(UserType& t)
 {
@@ -109,6 +112,7 @@ bool isDateVaild(Date d)
 
 	return true;
 }
+//Data basies
 bool writeNewUserToFile(User& newUser)
 {
 	ofstream f("UsersDB.txt", ios::app);
@@ -116,6 +120,13 @@ bool writeNewUserToFile(User& newUser)
 	f.close();
 	return 1;
 }
+//bool writeNewPackageToFile(Package& newPackage)
+//{
+//	ofstream f("PackagesDB.txt", ios::app);
+//	f << newPackage;
+//	f.close();
+//	return 1;
+//}
 void skipLines(ifstream& f, int n)
 {
 	for (int i = 0; i < n; i++)
@@ -349,11 +360,12 @@ void agentMenu()
 void managerMenu()
 {
 	int choice;
+	Cupon c;
 	do {
 		cout << "\n\n\t1.View Agent Options";
 		cout << "\n\n\t2.Add an agent";
 		cout << "\n\n\t3.Remove an agent";
-		cout << "\n\n\t4.Creat discount";
+		cout << "\n\n\t4.Creat discaunt cupon";
 		cout << "\n\n\t5.Exit" << endl;
 		cin >> choice;
 		switch (choice)
@@ -365,6 +377,8 @@ void managerMenu()
 		case 3: removeAgentFromFile();
 			break;
 		case 4:
+			cout << "creating a cupon:" << endl;
+			cin >> c;
 			//send the cupon to client
 			//call login register func
 			break;
