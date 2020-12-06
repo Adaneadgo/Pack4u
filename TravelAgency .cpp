@@ -313,6 +313,10 @@ istream& operator>>(istream& is, Cupon& c)
 // write the new cline to the DB
 //writeNewUserToFile(&newUser);
 //Agent menu
+void removeAgentFromFile()
+{
+
+}
 void agentMenu()
 {
 	int choice;
@@ -347,18 +351,21 @@ void managerMenu()
 	int choice;
 	do {
 		cout << "\n\n\t1.View Agent Options";
-		cout << "\n\n\t2.View agents";
-		cout << "\n\n\t3.Add an agent";
-		cout << "\n\n\t4.Remove an agent";
-		cout << "\n\n\t5.Creat discount";
-		cout << "\n\n\t6.Exit" << endl;
+		cout << "\n\n\t2.Add an agent";
+		cout << "\n\n\t3.Remove an agent";
+		cout << "\n\n\t4.Creat discount";
+		cout << "\n\n\t5.Exit" << endl;
 		cin >> choice;
 		switch (choice)
 		{
 		case 1: agentMenu();
 			break;
-
-		case 2:
+		case 2: userRegistration(agent);
+			break;
+		case 3: removeAgentFromFile();
+			break;
+		case 4:
+			//send the cupon to client
 			//call login register func
 			break;
 
@@ -366,19 +373,15 @@ void managerMenu()
 			cout << "\n\n\tTRY AGAIN";
 			break;
 		}
-	} while (choice != 3);
-}
-void addAgent()
-{
-
+	} while (choice != 5);
 }
 
 
 //Main
 int main()
 {
-	managerMenu();
 
+	managerMenu();
 }
 
 
