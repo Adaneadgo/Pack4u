@@ -20,32 +20,39 @@ typedef struct Flight { string destanion = "none"; Date out; Date in; }Flight;
 typedef struct Hotel { string name = "none"; string addres = "none"; }Hotel;
 typedef struct Package { int id = 0; Flight f; Hotel h; float rate = 0; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
 typedef struct Order { Date date; int packageId; Status status = in_process; int clientId; int agentId = 0; } Order; // redfine dfd - order approved only if agent accept
-
-<<<<<<< HEAD:TravelAgency .cpp
-typedef struct Message { string from; string message; }Message;
-=======
 //Other structs
 typedef struct Message { string from; string message; UserType type; }Message;
->>>>>>> 95d82e531a6274c90b4899ac3582ab60869446a2:TravelAgency.cpp
 typedef struct Cupon { int cuponCode; float discount; Date expiry; }Cupon; /// date or quantity 
 
 // Operators: read/write to/from file
-// Operators: read/write to/from file
-ostream& operator<<(ofstream& os, User& u);
+//User
 istream& operator>>(ifstream& f, User& u);
 istream& operator>>(ifstream& f, UserType& u);
-//read/write to/from console
-ostream& operator<<(ostream& os, User& u);
-istream& operator>>(istream& f, User& u);
-// Order
-ostream& operator<<(ostream& os, Order& o);
+//Order
 ostream& operator<<(ofstream& f, Order& o);
 istream& operator>>(ifstream& f, Order& o);
-//date
+//Date
 ostream& operator<<(ofstream& f, Date& d);
 istream& operator>>(ifstream& f, Date& d);
+//Package
+ofstream& operator<<(ofstream& f, Package& p);
+ifstream& operator>>(ifstream& f, Package& p);
+//read/write to/from console
+//User
+ostream& operator<<(ofstream& os, User& u);
+ostream& operator<<(ostream& os, User& u);
+istream& operator>>(istream& f, User& u);
+//Order
+ostream& operator<<(ostream& os, Order& o);
+//Date
 ostream& operator<<(ostream& os, Date& d);
 istream& operator>>(istream& is, Date& d);
+//Cupon
+ostream& operator<<(ostream& os, Cupon& c);
+istream& operator>>(istream& is, Cupon& c);
+//Package
+ostream& operator<<(ostream& os, Package& p);
+istream& operator>>(istream& is, Package* p);
 
 //Features: 1.
 bool logOrRegist();
@@ -57,15 +64,19 @@ bool makeAnOrder(Package p);
 bool search();
 //Asisnt function: files
 bool writeNewUserToFile(User& newUser);
+bool writeNewPackageToFile(Package& newPackage);
 void skipLines(ifstream& f, int n);
+//Menu
+void agentMenu()
+void managerMenu()
 //Others
 string strUserType(UserType& u);
 string strStatus(Status& s);
 Date today();
-void agentMenu();
-void managerMenu();
+bool isDateVaild(Date d);
+void removeAgentFromFile()
 
-
+/*------------------------------------------------------------------------*/
 User* user = nullptr; // The global logged user
 Package* package = nullptr;
 Message* message = nullptr;
