@@ -51,7 +51,7 @@ bool makeAnOrder(Package p);
 //3.
 bool search();
 //Asisnt function: files
-bool writeNewUserToFile(User& newClient);
+bool writeNewUserToFile(User& newUser);
 void skipLines(ifstream& f, int n);
 //Others
 string strUserType(UserType& u);
@@ -109,10 +109,10 @@ bool isDateVaild(Date d)
 
 	return true;
 }
-bool writeNewUserToFile(User& newClient)
+bool writeNewUserToFile(User& newUser)
 {
 	ofstream f("UsersDB.txt", ios::app);
-	f << newClient;
+	f << newUser;
 	f.close();
 	return 1;
 }
@@ -146,7 +146,7 @@ bool userRegistration(UserType t)
 	User* newUser = new User;
 	cout << "put the following details:" << endl;
 	cin >> *newUser;
-	newClient->type = t;
+	newUser->type = t;
 
 	// write the new cline to the DB
 	writeNewUserToFile(*newUser);
@@ -311,7 +311,7 @@ istream& operator>>(istream& is, Cupon& c)
 	return is;
 }
 // write the new cline to the DB
-writeNewUserToFile(*newClient);
+writeNewUserToFile(*newUser);
 //Agent menu
 void agentMenu()
 {
@@ -342,12 +342,14 @@ void agentMenu()
 	} while (choice != 4);
 }
 //Manger menu
-void manager()
+void managerMenu()
 {
 	int choice;
 	do {
 		cout << "\n\n\t1.View Agent Options";
 		cout << "\n\n\t2.View agents";
+		cout << "\n\n\t3.Add an agent";
+		cout << "\n\n\t4.Remove an agent";
 		cout << "\n\n\t3.Creat discount";
 		cout << "\n\n\t.Exit";
 		cin >> choice;
@@ -366,16 +368,17 @@ void manager()
 		}
 	} while (choice != 3);
 }
+void addAgent()
+{
+	userRegistration(UserType agent);
 
+}
 
 
 //Main
 int main()
 {
-	Cupon c;
-	cin >> c;
-	cout << c;
-	return 0;
+	managerMenu();
 
 }
 
