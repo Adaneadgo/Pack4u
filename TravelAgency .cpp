@@ -311,7 +311,7 @@ istream& operator>>(istream& is, Cupon& c)
 	return is;
 }
 // write the new cline to the DB
-writeNewUserToFile(*newUser);
+//writeNewUserToFile(&newUser);
 //Agent menu
 void agentMenu()
 {
@@ -350,8 +350,8 @@ void managerMenu()
 		cout << "\n\n\t2.View agents";
 		cout << "\n\n\t3.Add an agent";
 		cout << "\n\n\t4.Remove an agent";
-		cout << "\n\n\t3.Creat discount";
-		cout << "\n\n\t.Exit";
+		cout << "\n\n\t5.Creat discount";
+		cout << "\n\n\t6.Exit" << endl;
 		cin >> choice;
 		switch (choice)
 		{
@@ -370,7 +370,6 @@ void managerMenu()
 }
 void addAgent()
 {
-	userRegistration(UserType agent);
 
 }
 
