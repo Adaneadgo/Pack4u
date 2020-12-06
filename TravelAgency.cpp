@@ -10,7 +10,7 @@ using namespace std;
 
 //Enums: states/type of objects
 typedef enum  UserType { client, agent, manager } UserType;
-typedef enum  Status { Canceled, in_process, Confirmed } Status;
+typedef enum  Status { Cancelled, in_process, Confirmed } Status;
 
 //Structs: user defention
 typedef struct User { int id = 0; string password; string userName; UserType type = client; } User;
@@ -104,7 +104,7 @@ string strStatus(Status& s)
 {
 	switch (s)
 	{
-	case Canceled:
+	case Cancelled:
 		return "Canceled";
 	case in_process:
 		return "in process";
