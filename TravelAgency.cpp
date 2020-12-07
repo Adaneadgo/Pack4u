@@ -620,6 +620,25 @@ void managerMenu()
 		}
 	} while (choice != 6);
 }
+//update the rate of the package
+void updateRate(Package& r)
+{
+	cout << "Enter your rate for this package: ";
+	float temp;
+	cin >> temp;
+	r.rate = (r.rate + temp) / 2;
+}
+//Make a Rate
+void makeARate(vector<Package> arr, int index)
+{
+	updateRate(arr[index]);
+	ofstream f;
+	f.open("Package.txt");
+	//for (int i = 0; i < arr.size(); ++i)
+		f << arr[index];
+	f.close();
+}
+
 //Main
 int main()
 {
