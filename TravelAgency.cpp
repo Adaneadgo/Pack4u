@@ -143,9 +143,17 @@ bool isDateVaild(Date d)
 	return true;
 }
 //Data basies
-bool writeNewMessageToFile(Message& newMessage)
+bool writeNewMessageFromClientToFile(Message& newMessage)
 {
-	ofstream f("MessageDB.txt", ios::app);
+	ofstream f("MessageFromClientDB.txt", ios::app);
+	if (!f) return false;
+	f << newMessage;
+	f.close();
+	return 1;
+}
+bool writeNewMessageFromManegerToFile(Message& newMessage)
+{
+	ofstream f("MessageFromManegerDB.txt", ios::app);
 	if (!f) return false;
 	f << newMessage;
 	f.close();
@@ -599,17 +607,29 @@ void managerMenu()
 		}
 	} while (choice != 5);
 }
-//Show all requests
-void showRequest()
+//
+void showMessageFromClient()
 {
-	Request r;
+	Message m;
 	ifstream f;
-	f.open("masseges.txt");
+	f.open("MassegesFromClientDB.txt");
 
 	while (!f.eof())
 	{
-		f >> &r;
-		cout << &r;
+		f >> &m;
+		cout << &m;
+	}
+}
+void showMessageFromManeger()
+{
+	Message m;
+	ifstream f;
+	f.open("MassegesFromManegerDB.txt");
+
+	while (!f.eof())
+	{
+		f >> &m;
+		cout << &m;
 	}
 }
 
