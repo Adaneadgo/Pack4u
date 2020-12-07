@@ -471,7 +471,6 @@ bool userRegistration(UserType t)
 	//if everything went well
 	return true;
 }
-
 bool login()
 {
 	int id;
@@ -518,7 +517,7 @@ bool makeAnOrder(Package p)
 }
 void showMessageFromClient()
 {
-	Message m;
+	Message newMessage;
 	ifstream f;
 	f.open("MassegesFromClientDB.txt");
 
@@ -549,7 +548,7 @@ void writeMessageToFileFromClient()
 	cout << s << endl;
 	cout << "Please enter your phon number to contact: ";
 	cin >> phonNumber;
-	ofstream f("MessageFromClientDB.txt");
+	ofstream f("MessageFromClientDB.txt", ios::app);
 	f << s;
 	f << phonNumber;
 	f.close();
@@ -560,9 +559,15 @@ void writeMessageToFileFromManeger(UserType t)
 	s.to = t;
 	cin >> s;
 	cout << s;
-	ofstream f("MessageFromManegerDB.txt");
+	ofstream f("MessageFromManegerDB.txt", ios::app);
 	f << s;
 	f.close();
+	// create the new user
+	Message* newMessage = new Message;
+	cout << "put the following details: " << endl;
+	cin >> *newMessage;
+	//if everything went well
+	return true;
 }
 //User Menu
 //Agent menu
