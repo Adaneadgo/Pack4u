@@ -28,7 +28,7 @@ typedef struct Hotel { string name = "none"; string address = "none"; }Hotel;
 typedef struct Package { int id = 0; Flight f; Hotel h; float rate = 0; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
 typedef struct Order { Date date; int packageId; Status status = in_process; int clientId; int agentId = 0; }Order; // redfine dfd - order approved only if agent accept
 //Other structs
-typedef struct Message { Date d; string from; UserType to; string message; }Message;
+typedef struct Message { Date d; string sender; UserType to; string message; }Message;
 typedef struct Cupon { int cuponCode; float discount; Date expiry; }Cupon; /// date or quantity 
 
 // Operators: read/write to/from file
@@ -91,6 +91,8 @@ bool isDateVaild(Date d);
 void removeAgentFromFile();
 void showMessageFromClient();
 void showMessageFromManeger();
+bool writeNewMessageFromClientToFile(Message& newMessage);
+bool writeNewMessageFromManegerToFile(Message& newMessage, UserType t);
 /*------------------------------------------------------------------------*/
 //Global
 User* user = nullptr; // The global logged user
@@ -192,21 +194,20 @@ ifstream& operator>>(ifstream& f, Package& p)
 	f >> p.quantity;
 	return f;
 }
-ostream& operator<<(ofstream& f, Message& m)
+ostream& operator<<(ostream& os, Message& m)
 {
-	f << m.d << endl;
-	f << m.from << endl;
-	f << m.to << endl;
-	f << m.message << endl;
-	return f;
+	os << "Sent at : " << m.d << endl;
+	os << "From: " << m.sender << endl;
+	os << "Body message: " << m.message;
+	return os;
 }
-istream& operator>>(ifstream& f, Message& m)
+istream& operator>>(istream& is, Message& m)
 {
-	f >> m.d;
-	f >> m.from;
-	f >> m.to;
-	f >> m.message;
-	return f;
+	m.d = today();
+	m.sender = user->userName;
+	cout << "Body message: ";
+	is >> m.message;
+	return is;
 }
 // Operators: read/write to/from console
 ostream& operator<<(ostream& os, User& u)
@@ -331,22 +332,21 @@ istream& operator>>(istream& is, Package& p)
 	is >> p.quantity;
 	return is;
 }
-ostream& operator<<(ostream& os, Message& m)
+ostream& operator<<(ofstream& f, Message& m)
 {
-	m.d = today();
-	os << "Date: " << m.d << endl;
-	os << "From: " << m.from << endl;
-	os << "To: " << m.to << endl;
-	os << "Body message: " << m.message;
-	return os;
+	f << m.d << endl;
+	f << m.sender << endl;
+	f << m.to << endl;
+	f << m.message << endl;
+	return f;
 }
-istream& operator>>(istream& is, Message& m)
+istream& operator>>(ifstream& f, Message& m)
 {
-	cout << "From: " << endl;
-	is >> m.from;
-	cout << "Boody message: ";
-	is >> m.message;
-	return is;
+	f >> m.d;
+	f >> m.sender;
+	f >> m.to;
+	f >> m.message;
+	return f;
 }
 //Functions
 string strUserType(UserType& t)
@@ -399,20 +399,23 @@ bool isDateVaild(Date d)
 //Data basies
 bool writeNewMessageFromClientToFile(Message& newMessage)
 {
+	newMessage.to = agent;
 	ofstream f("MessageFromClientDB.txt", ios::app);
 	if (!f) return false;
 	f << newMessage;
 	f.close();
 	return 1;
 }
-bool writeNewMessageFromManegerToFile(Message& newMessage)
+bool writeNewMessageFromManegerToFile(Message& newMessage, UserType t)
 {
+	newMessage.to = t;
 	ofstream f("MessageFromManegerDB.txt", ios::app);
 	if (!f) return false;
 	f << newMessage;
 	f.close();
 	return 1;
 }
+
 bool writeNewUserToFile(User& newUser)
 {
 	ofstream f("UsersDB.txt", ios::app);
@@ -471,6 +474,7 @@ bool userRegistration(UserType t)
 	//if everything went well
 	return true;
 }
+
 bool login()
 {
 	int id;
@@ -498,7 +502,6 @@ bool login()
 bool search()
 {
 	// search package need to writen.
-
 	Package p;
 	makeAnOrder(p);
 	return true;
@@ -517,7 +520,7 @@ bool makeAnOrder(Package p)
 }
 void showMessageFromClient()
 {
-	Message newMessage;
+	Message m;
 	ifstream f;
 	f.open("MassegesFromClientDB.txt");
 
@@ -538,36 +541,6 @@ void showMessageFromManeger()
 		f >> m;
 		cout << m;
 	}
-}
-void writeMessageToFileFromClient()
-{
-	long phonNumber;
-	Message s;
-	s.to = agent;
-	cin >> s;
-	cout << s << endl;
-	cout << "Please enter your phon number to contact: ";
-	cin >> phonNumber;
-	ofstream f("MessageFromClientDB.txt", ios::app);
-	f << s;
-	f << phonNumber;
-	f.close();
-}
-void writeMessageToFileFromManeger(UserType t)
-{
-	Message s;
-	s.to = t;
-	cin >> s;
-	cout << s;
-	ofstream f("MessageFromManegerDB.txt", ios::app);
-	f << s;
-	f.close();
-	// create the new user
-	Message* newMessage = new Message;
-	cout << "put the following details: " << endl;
-	cin >> *newMessage;
-	//if everything went well
-	return true;
 }
 //User Menu
 //Agent menu
@@ -621,6 +594,7 @@ void managerMenu()
 		cout << "\n\n\t5.Send message to agents";
 		cout << "\n\n\t6.Exit" << endl;
 		cin >> choice;
+		Message m;
 		switch (choice)
 		{
 		case 1: agentMenu();
@@ -633,10 +607,12 @@ void managerMenu()
 			cout << "creating a cupon:" << endl;
 			cin >> cop;
 			cout << "Good! now please send it to client" << endl;
-			writeMessageToFileFromManeger(client);
+			cin >> m;
+			writeNewMessageFromManegerToFile(m, client);
 			break;
 		case 5:
-			writeMessageToFileFromManeger(agent);
+			cin >> m;
+			writeNewMessageFromManegerToFile(m, agent);
 			break;
 		default:
 			cout << "\n\n\tTRY AGAIN";
