@@ -28,7 +28,7 @@ typedef struct Hotel { string name = "none"; string address = "none"; }Hotel;
 typedef struct Package { int id = 0; Flight f; Hotel h; float rate = 0; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
 typedef struct Order { Date date; int packageId; Status status = in_process; int clientId; int agentId = 0; }Order; // redfine dfd - order approved only if agent accept
 //Other structs
-typedef struct Message { Date d; string from; UserType type; string message; }Message;
+typedef struct Message { Date d; string from; UserType to; string message; }Message;
 typedef struct Cupon { int cuponCode; float discount; Date expiry; }Cupon; /// date or quantity 
 
 // Operators: read/write to/from file
@@ -194,17 +194,17 @@ ifstream& operator>>(ifstream& f, Package& p)
 }
 ostream& operator<<(ofstream& f, Message& m)
 {
-	f << "Date: " << m.d << endl;
-	f << "From: " << m.from << endl;
-	f << "To: " << m.type << endl;
-	f << "Body message: " << m.message << endl;
+	f << m.d << endl;
+	f << m.from << endl;
+	f << m.to << endl;
+	f << m.message << endl;
 	return f;
 }
 istream& operator>>(ifstream& f, Message& m)
 {
 	f >> m.d;
 	f >> m.from;
-	f >> m.type;
+	f >> m.to;
 	f >> m.message;
 	return f;
 }
@@ -336,7 +336,7 @@ ostream& operator<<(ostream& os, Message& m)
 	m.d = today();
 	os << "Date: " << m.d << endl;
 	os << "From: " << m.from << endl;
-	os << "To: " << m.type << endl;
+	os << "To: " << m.to << endl;
 	os << "Body message: " << m.message;
 	return os;
 }
@@ -471,20 +471,7 @@ bool userRegistration(UserType t)
 	//if everything went well
 	return true;
 }
-bool addPackage()
-{
-	if (user->type != agent) return false;
-	// create the new user
-	Package newPackage;
-	cout << "put the following details: " << endl;
-	cin >> newPackage;
 
-	// write the new cline to the DB
-	writeNewPackageToFile(newPackage);
-
-	//if everything went well
-	return true;
-}
 bool login()
 {
 	int id;
@@ -555,18 +542,22 @@ void showMessageFromManeger()
 }
 void writeMessageToFileFromClient()
 {
+	long phonNumber;
 	Message s;
-	s.type = agent;
+	s.to = agent;
 	cin >> s;
-	cout << s;
+	cout << s << endl;
+	cout << "Please enter your phon number to contact: ";
+	cin >> phonNumber;
 	ofstream f("MessageFromClientDB.txt");
 	f << s;
+	f << phonNumber;
 	f.close();
 }
-void writeMessageToFileFromManeger(UserType& t)
+void writeMessageToFileFromManeger(UserType t)
 {
 	Message s;
-	s.type = t;
+	s.to = t;
 	cin >> s;
 	cout << s;
 	ofstream f("MessageFromManegerDB.txt");
@@ -599,7 +590,7 @@ void agentMenu()
 		case 2:
 			//view client
 			break;
-		case 3: addPackage();
+		case 3:
 			break;
 		case 4:
 			cout << "\n\n\tEmail: pack4u@mail.com\n\tPhone: 1-700-800-800";
@@ -621,8 +612,9 @@ void managerMenu()
 		cout << "\n\n\t1.View Agent Options";
 		cout << "\n\n\t2.Add an agent";
 		cout << "\n\n\t3.Remove an agent";
-		cout << "\n\n\t4.Creat discaunt cupon";
-		cout << "\n\n\t5.Exit" << endl;
+		cout << "\n\n\t4.Creat discaunt cupon and send to client";
+		cout << "\n\n\t5.Send message to agents";
+		cout << "\n\n\t6.Exit" << endl;
 		cin >> choice;
 		switch (choice)
 		{
@@ -635,24 +627,20 @@ void managerMenu()
 		case 4:
 			cout << "creating a cupon:" << endl;
 			cin >> cop;
-			//send the cupon to client
-			//call login register func
+			cout << "Good! now please send it to client" << endl;
+			writeMessageToFileFromManeger(client);
 			break;
-
+		case 5:
+			writeMessageToFileFromManeger(agent);
+			break;
 		default:
 			cout << "\n\n\tTRY AGAIN";
 			break;
 		}
-	} while (choice != 5);
+	} while (choice != 6);
 }
-
 //Main
 int main()
 {
-	Message s;
-	cin >> s;
-	cout << s;
-	ofstream f("Message.txt");
-	f << s;
-	f.close();
+	managerMenu();
 }
