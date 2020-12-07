@@ -28,7 +28,7 @@ typedef struct Hotel { string name = "none"; string address = "none"; }Hotel;
 typedef struct Package { int id = 0; Flight f; Hotel h; float rate = 0; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
 typedef struct Order { Date date; int packageId; Status status = in_process; int clientId; int agentId = 0; }Order; // redfine dfd - order approved only if agent accept
 //Other structs
-typedef struct Message { Date d = today(); string from; UserType type; string message; }Message;
+typedef struct Message { Date d; string from; UserType type; string message; }Message;
 typedef struct Cupon { int cuponCode; float discount; Date expiry; }Cupon; /// date or quantity 
 
 // Operators: read/write to/from file
@@ -65,7 +65,7 @@ istream& operator>>(istream& is, Package& p);
 //Message
 ostream& operator<<(ostream& os, Message& p);
 istream& operator>>(istream& is, Message& p);
-
+//Operator = 
 //Features: 1.
 bool logOrRegist();
 bool userRegistration(UserType t);
@@ -87,7 +87,8 @@ string strStatus(Status& s);
 Date today();
 bool isDateVaild(Date d);
 void removeAgentFromFile();
-
+void showMessageFromClient();
+void showMessageFromManeger();
 /*------------------------------------------------------------------------*/
 //Global
 User* user = nullptr; // The global logged user
@@ -202,13 +203,13 @@ bool logOrRegist()
 bool userRegistration(UserType t)
 {
 	// create the new user
-	User newUser;
+	User* newUser;
 	cout << "put the following details: " << endl;
-	cin >> newUser;
+	cin >> *newUser;
 	newUser->type = t;
 
 	// write the new cline to the DB
-	writeNewUserToFile(newUser);
+	writeNewUserToFile(*newUser);
 
 	//login
 	if (!user)
@@ -281,10 +282,11 @@ bool trackOrder()
 	ifstream f("OrdersDB.txt");
 	while (f >> temp)
 		arr.push_back(temp);
-	for (int i = 0; i < arr.size(); i++)
+	for (int i = 0; i < int(arr.size()); i++)
 		cout << arr[i] << endl;
 	return 1;
 }
+// Operators: read/write to/from file
 ostream& operator<<(ofstream& f, User& u)
 {
 	f << u.id << endl;
@@ -301,24 +303,6 @@ istream& operator>>(ifstream& f, User& u)
 	f >> u.type;
 	return f;
 }
-ostream& operator<<(ostream& os, User& u)
-{
-	os << endl << strUserType(u.type);
-	os << " Name: " << u.userName << endl;
-	os << "Id: " << u.id << endl;
-	return os;
-}
-istream& operator>>(istream& is, User& u)
-{
-	// getting the new user client details
-	cout << "Id: ";
-	is >> u.id;
-	cout << "Password ";
-	is >> u.password;
-	cout << "UserName: ";
-	is >> u.userName;
-	return is;
-}
 istream& operator>>(ifstream& f, UserType& u)
 {
 	int i;
@@ -332,15 +316,6 @@ istream& operator>>(ifstream& f, Status& u)
 	f >> i;
 	u = Status(i);
 	return f;
-}
-ostream& operator<<(ostream& os, Order& o)
-{
-	os << "Date: " << o.date << endl;
-	os << "Client Id: " << o.clientId << endl;
-	os << o.packageId << endl;
-	os << "Order status: " << strStatus(o.status);
-	return os;
-
 }
 ostream& operator<<(ofstream& f, Order& o)
 {
@@ -377,6 +352,78 @@ istream& operator>>(ifstream& f, Date& d)
 	f >> dot;
 	f >> d.year;
 	return f;
+}
+ofstream& operator<<(ofstream& f, Package& p)
+{
+	f << p.id << endl;
+	f << p.f.destination << endl;
+	f << p.f.out << endl;
+	f << p.f.in << endl;
+	f << p.h.name << endl;
+	f << p.h.address << endl;
+	f << p.rate << endl;
+	f << p.numOfRates << endl;
+	f << p.price << endl;
+	f << p.quantity << endl;
+	return f;
+}
+ifstream& operator>>(ifstream& f, Package& p)
+{
+	f >> p.id;
+	f >> p.f.destination;
+	f >> p.f.out;
+	f >> p.f.in;
+	f >> p.h.name;
+	f >> p.h.address;
+	f >> p.rate;
+	f >> p.numOfRates;
+	f >> p.price;
+	f >> p.quantity;
+	return f;
+}
+ostream& operator<<(ofstream& f, Message& m)
+{
+	f << "Date: " << m.d << endl;
+	f << "From: " << m.from << endl;
+	f << "To: " << m.type << endl;
+	f << "Body message: " << m.message << endl;
+	return f;
+}
+istream& operator>>(ifstream& f, Message& m)
+{
+	f >> m.d;
+	f >> m.from;
+	f >> m.type;
+	f >> m.message;
+	return f;
+}
+// Operators: read/write to/from console
+ostream& operator<<(ostream& os, User& u)
+{
+	os << endl << strUserType(u.type);
+	os << " Name: " << u.userName << endl;
+	os << "Id: " << u.id << endl;
+	return os;
+}
+istream& operator>>(istream& is, User& u)
+{
+	// getting the new user client details
+	cout << "Id: ";
+	is >> u.id;
+	cout << "Password ";
+	is >> u.password;
+	cout << "UserName: ";
+	is >> u.userName;
+	return is;
+}
+ostream& operator<<(ostream& os, Order& o)
+{
+	os << "Date: " << o.date << endl;
+	os << "Client Id: " << o.clientId << endl;
+	os << o.packageId << endl;
+	os << "Order status: " << strStatus(o.status);
+	return os;
+
 }
 ostream& operator<<(ostream& os, Date& d)
 {
@@ -424,20 +471,6 @@ ostream& operator<<(ostream& os, Package& p)
 	os << "Hotel Address: " << p.h.address << endl;
 	os << "Package rating: " << p.rate << " out of: " << p.numOfRates << " Ratings." << endl;
 	return os;
-}
-ofstream& operator<<(ofstream& f, Package& p)
-{
-	f << p.id << endl;
-	f << p.f.destination << endl;
-	f << p.f.out << endl;
-	f << p.f.in << endl;
-	f << p.h.name << endl;
-	f << p.h.address << endl;
-	f << p.rate << endl;
-	f << p.numOfRates << endl;
-	f << p.price << endl;
-	f << p.quantity << endl;
-	return f;
 }
 istream& operator>>(istream& is, Package& p)
 {
@@ -487,39 +520,10 @@ istream& operator>>(istream& is, Package& p)
 	is >> p.quantity;
 	return is;
 }
-ifstream& operator>>(ifstream& f, Package& p)
-{
-	f >> p.id;
-	f >> p.f.destination;
-	f >> p.f.out;
-	f >> p.f.in;
-	f >> p.h.name;
-	f >> p.h.address;
-	f >> p.rate;
-	f >> p.numOfRates;
-	f >> p.price;
-	f >> p.quantity;
-	return f;
-}
-ostream& operator<<(ofstream& f, Message& m)
-{
-	f << "Date: " << m.d << endl;
-	f << "From: " << m.from << endl;
-	f << "To: " << m.type << endl;
-	f << "Body message: " << m.message << endl;
-	return f;
-}
-istream& operator>>(ifstream& f, Message& m)
-{
-	f >> m.d;
-	f >> m.from;
-	f >> m.type;
-	f >> m.message;
-	return f;
-}
 ostream& operator<<(ostream& os, Message& m)
 {
-	os << "Date: " << m.d;
+	m.d = today();
+	os << "Date: " << m.d << endl;
 	os << "From: " << m.from << endl;
 	os << "To: " << m.type << endl;
 	os << "Body message: " << m.message;
@@ -527,15 +531,37 @@ ostream& operator<<(ostream& os, Message& m)
 }
 istream& operator>>(istream& is, Message& m)
 {
-	is >> m.d;
 	cout << "From: " << endl;
 	is >> m.from;
 	cout << "Boody message: ";
 	is >> m.message;
 	return is;
 }
+void showMessageFromClient()
+{
+	Message m;
+	ifstream f;
+	f.open("MassegesFromClientDB.txt");
 
-// write the new cline to the DB
+	while (!f.eof())
+	{
+		f >> m;
+		cout << m;
+	}
+}
+void showMessageFromManeger()
+{
+	Message m;
+	ifstream f;
+	f.open("MassegesFromManegerDB.txt");
+
+	while (!f.eof())
+	{
+		f >> m;
+		cout << m;
+	}
+}
+//User Menu
 //Agent menu
 void removeAgentFromFile()
 {
@@ -606,31 +632,6 @@ void managerMenu()
 			break;
 		}
 	} while (choice != 5);
-}
-//
-void showMessageFromClient()
-{
-	Message m;
-	ifstream f;
-	f.open("MassegesFromClientDB.txt");
-
-	while (!f.eof())
-	{
-		f >> &m;
-		cout << &m;
-	}
-}
-void showMessageFromManeger()
-{
-	Message m;
-	ifstream f;
-	f.open("MassegesFromManegerDB.txt");
-
-	while (!f.eof())
-	{
-		f >> &m;
-		cout << &m;
-	}
 }
 
 //Main
