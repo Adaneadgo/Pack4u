@@ -32,6 +32,8 @@ typedef struct Message { Date d; string from; UserType type; string message; }Me
 typedef struct Cupon { int cuponCode; float discount; Date expiry; }Cupon; /// date or quantity 
 
 // Operators: read/write to/from file
+//UserType
+istream& operator>>(ifstream& f, UserType& u);
 //User
 ostream& operator<<(ofstream& f, User& u);
 istream& operator>>(ifstream& f, User& u);
@@ -92,200 +94,9 @@ void showMessageFromManeger();
 /*------------------------------------------------------------------------*/
 //Global
 User* user = nullptr; // The global logged user
-Package* package = nullptr;
-Message* message = nullptr;
 Cupon cop;
 
-string strUserType(UserType& t)
-{
-	switch (t)
-	{
-	case client:
-		return "Client";
-	case agent:
-		return "Agent";
-	case manager:
-		return "The Manager";
-	default:
-		return "";
-	}
-}
-string strStatus(Status& s)
-{
-	switch (s)
-	{
-	case Cancelled:
-		return "Canceled";
-	case in_process:
-		return "in process";
-	case Confirmed:
-		return "Confirmed";
-	default:
-		return "";
-	}
-}
-Date today()
-{
-	time_t t = time(NULL);
-	tm time = *localtime(&t);
-	Date d = { time.tm_mday,time.tm_mon + 1,time.tm_year + 1900 };
-	return d;
-}
-bool isDateVaild(Date d)
-{
-	Date dn = today();
-	if (d.year < dn.year)
-		return false;
-	else if (d.month < dn.month)
-		return false;
-	else if (d.day < dn.day)
-		return false;
-
-	return true;
-}
-//Data basies
-bool writeNewMessageFromClientToFile(Message& newMessage)
-{
-	ofstream f("MessageFromClientDB.txt", ios::app);
-	if (!f) return false;
-	f << newMessage;
-	f.close();
-	return 1;
-}
-bool writeNewMessageFromManegerToFile(Message& newMessage)
-{
-	ofstream f("MessageFromManegerDB.txt", ios::app);
-	if (!f) return false;
-	f << newMessage;
-	f.close();
-	return 1;
-}
-bool writeNewUserToFile(User& newUser)
-{
-	ofstream f("UsersDB.txt", ios::app);
-	if (!f) return false;
-	f << newUser;
-	f.close();
-	return 1;
-}
-bool writeNewPackageToFile(Package& newPackage)
-{
-	ofstream f("PackagesDB.txt", ios::app);
-	if (!f) return false;
-	f << newPackage;
-	f.close();
-	return 1;
-}
-void skipLines(ifstream& f, int n)
-{
-	for (int i = 0; i < n; i++)
-		f.ignore(numeric_limits<streamsize>::max(), '\n');
-}
-bool logOrRegist()
-{
-
-	int input;
-	do {
-		cout << "please select:" << endl;
-		cout << "1. Login" << endl << "2. Regist" << endl;
-		cin >> input;
-
-		if (input == 1)
-			login();
-		if (input == 2)
-			userRegistration(client);
-
-	} while (input != 1 && input != 2);
-
-	return user != nullptr;
-
-}
-bool userRegistration(UserType t)
-{
-	// create the new user
-	User* newUser;
-	cout << "put the following details: " << endl;
-	cin >> *newUser;
-	newUser->type = t;
-
-	// write the new cline to the DB
-	writeNewUserToFile(*newUser);
-
-	//login
-	if (!user)
-		user = newUser;
-
-	//if everything went well
-	return true;
-}
-bool addPackage()
-{
-	// create the new user
-	Package newPackage;
-	cout << "put the following details: " << endl;
-	cin >> newPackage;
-
-	// write the new cline to the DB
-	writeNewPackageToFile(newPackage);
-
-	//if everything went well
-	return true;
-}
-bool login()
-{
-	int id;
-	string password;
-	cout << "please put your id: ";
-	cin >> id;
-	cout << "please put you password: ";
-	cin >> password;
-
-	user = new User;
-
-	ifstream f("UsersDB.txt");
-	while (f >> *user)
-	{
-		if (user->id == id && user->password == password)
-		{
-			f.close(); return true;
-		}
-	}
-
-	f.close();
-	delete user;
-	return false;
-}
-bool search()
-{
-	// search package need to writen.
-
-	Package p;
-	makeAnOrder(p);
-	return true;
-
-}
-bool makeAnOrder(Package p)
-{
-	if (!user)
-	{
-		cout << "not logged" << endl; logOrRegist();
-	}
-	Order order = { today(), p.id, in_process, user->id, 0 };
-	cout << endl << "Summary: " << order << endl << "{package details}" << endl;
-	ofstream f("Orders");
-	return 1;
-}
-bool trackOrder()
-{
-	vector<Order> arr;
-	Order temp;
-	ifstream f("OrdersDB.txt");
-	while (f >> temp)
-		arr.push_back(temp);
-	for (int i = 0; i < int(arr.size()); i++)
-		cout << arr[i] << endl;
-	return 1;
-}
+//Opertors
 // Operators: read/write to/from file
 ostream& operator<<(ofstream& f, User& u)
 {
@@ -537,6 +348,187 @@ istream& operator>>(istream& is, Message& m)
 	is >> m.message;
 	return is;
 }
+//Functions
+string strUserType(UserType& t)
+{
+	switch (t)
+	{
+	case client:
+		return "Client";
+	case agent:
+		return "Agent";
+	case manager:
+		return "The Manager";
+	default:
+		return "";
+	}
+}
+string strStatus(Status& s)
+{
+	switch (s)
+	{
+	case Cancelled:
+		return "Canceled";
+	case in_process:
+		return "in process";
+	case Confirmed:
+		return "Confirmed";
+	default:
+		return "";
+	}
+}
+Date today()
+{
+	time_t t = time(NULL);
+	tm time = *localtime(&t);
+	Date d = { time.tm_mday,time.tm_mon + 1,time.tm_year + 1900 };
+	return d;
+}
+bool isDateVaild(Date d)
+{
+	Date dn = today();
+	if (d.year < dn.year)
+		return false;
+	else if (d.month < dn.month)
+		return false;
+	else if (d.day < dn.day)
+		return false;
+
+	return true;
+}
+//Data basies
+bool writeNewMessageFromClientToFile(Message& newMessage)
+{
+	ofstream f("MessageFromClientDB.txt", ios::app);
+	if (!f) return false;
+	f << newMessage;
+	f.close();
+	return 1;
+}
+bool writeNewMessageFromManegerToFile(Message& newMessage)
+{
+	ofstream f("MessageFromManegerDB.txt", ios::app);
+	if (!f) return false;
+	f << newMessage;
+	f.close();
+	return 1;
+}
+bool writeNewUserToFile(User& newUser)
+{
+	ofstream f("UsersDB.txt", ios::app);
+	if (!f) return false;
+	f << newUser;
+	f.close();
+	return 1;
+}
+bool writeNewPackageToFile(Package& newPackage)
+{
+	ofstream f("PackagesDB.txt", ios::app);
+	if (!f) return false;
+	f << newPackage;
+	f.close();
+	return 1;
+}
+void skipLines(ifstream& f, int n)
+{
+	for (int i = 0; i < n; i++)
+		f.ignore(numeric_limits<streamsize>::max(), '\n');
+}
+bool logOrRegist()
+{
+
+	int input;
+	do {
+		cout << "please select:" << endl;
+		cout << "1. Login" << endl << "2. Regist" << endl;
+		cin >> input;
+
+		if (input == 1)
+			login();
+		if (input == 2)
+			userRegistration(client);
+
+	} while (input != 1 && input != 2);
+
+	return user != nullptr;
+
+}
+bool userRegistration(UserType t)
+{
+	// create the new user
+	User* newUser = new User;
+	cout << "put the following details: " << endl;
+	cin >> *newUser;
+	newUser->type = t;
+
+	// write the new cline to the DB
+	writeNewUserToFile(*newUser);
+
+	//login
+	if (!user)
+		user = newUser;
+
+	//if everything went well
+	return true;
+}
+bool addPackage()
+{
+	if (user->type != agent) return false;
+	// create the new user
+	Package newPackage;
+	cout << "put the following details: " << endl;
+	cin >> newPackage;
+
+	// write the new cline to the DB
+	writeNewPackageToFile(newPackage);
+
+	//if everything went well
+	return true;
+}
+bool login()
+{
+	int id;
+	string password;
+	cout << "please put your id: ";
+	cin >> id;
+	cout << "please put you password: ";
+	cin >> password;
+
+	user = new User;
+
+	ifstream f("UsersDB.txt");
+	while (f >> *user)
+	{
+		if (user->id == id && user->password == password)
+		{
+			f.close(); return true;
+		}
+	}
+
+	f.close();
+	delete user;
+	return false;
+}
+bool search()
+{
+	// search package need to writen.
+
+	Package p;
+	makeAnOrder(p);
+	return true;
+
+}
+bool makeAnOrder(Package p)
+{
+	if (!user)
+	{
+		cout << "not logged" << endl; logOrRegist();
+	}
+	Order order = { today(), p.id, in_process, user->id, 0 };
+	cout << endl << "Summary: " << order << endl << "{package details}" << endl;
+	ofstream f("Orders");
+	return 1;
+}
 void showMessageFromClient()
 {
 	Message m;
@@ -638,4 +630,6 @@ void managerMenu()
 int main()
 {
 	Message s;
+	cin >> s;
+	cout << s;
 }
