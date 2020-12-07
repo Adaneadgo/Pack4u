@@ -4,7 +4,14 @@
 #include<string>
 #include<ctime>
 #include<vector>
-
+#define RED "\033[1;31m" //color red
+#define GREEN "\033[1;32m" //color green
+#define YELLOW "\033[1;33m" //color yellow
+#define BLUE "\033[1;34m" //color blue
+#define PINK "\033[1;35m" //color pink
+#define MAGENTA "\033[1;36m" //color magenta
+#define WHITE "\033[0m"    //color reset to white
+#define BLOCKCOLOR "\033[1;100;30m" //block of color
 
 using namespace std;
 
@@ -21,6 +28,7 @@ typedef struct Hotel { string name = "none"; string address = "none"; }Hotel;
 typedef struct Package { int id = 0; Flight f; Hotel h; float rate = 0; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
 typedef struct Order { Date date; int packageId; Status status = in_process; int clientId; int agentId = 0; }Order; // redfine dfd - order approved only if agent accept
 //Other structs
+typedef struct Request { int senderId; int agentId = 0; string content; } Request;
 typedef struct Message { string from; string message; UserType type; }Message;
 typedef struct Cupon { int cuponCode; float discount; Date expiry; }Cupon; /// date or quantity 
 
@@ -40,6 +48,9 @@ ifstream& operator>>(ifstream& f, Package& p);
 //Message
 istream& operator>>(ifstream& f, Message& m);
 istream& operator>>(ifstream& f, Message& m);
+//Request
+ofstream& operator<<(ofstream& f, Request* r);
+ifstream& operator>>(ifstream& f, Request* r);
 //read/write to/from console
 //User
 ostream& operator<<(ostream& os, User& u);
@@ -58,6 +69,9 @@ istream& operator>>(istream& is, Package& p);
 //Message
 ostream& operator<<(ostream& os, Message& p);
 istream& operator>>(istream& is, Message& p);
+//Request
+ostream& operator<<(ostream& out, Request* r);
+istream& operator>>(istream& in, Request* r);
 
 //Features: 1.
 bool logOrRegist();
@@ -500,6 +514,35 @@ istream& operator>>(istream& is, Message& m)
 	is >> m.message;
 	return is;
 }
+ostream& operator<<(ostream& out, Request* r)
+{
+	out << "Sender ID: " << YELLOW << r->senderId << endl;
+	out << WHITE << "Content: " << GREEN << r->content << WHITE << endl << endl;
+	return out;
+}
+istream& operator>>(istream& in, Request* r)
+{
+	cout << "Enter your ID: ";
+	in >> r->senderId;
+	cout << "Enter your massege: ";
+	in >> r->content;
+
+	return in;
+}
+ifstream& operator>>(ifstream& f, Request* r)
+{
+	f >> r->senderId;
+	//f >> r->agentId;
+	f >> r->content;
+	return f;
+}
+ofstream& operator<<(ofstream& f, Request* r)
+{
+	f << r->senderId << endl;
+	//f << r->agentId << endl;
+	f << r->content << endl;
+	return f;
+}
 
 // write the new cline to the DB
 //Agent menu
@@ -574,12 +617,22 @@ void managerMenu()
 		}
 	} while (choice != 5);
 }
+//Show all requests
+void showRequest()
+{
+	Request r;
+	ifstream f;
+	f.open("masseges.txt");
 
+	while (!f.eof())
+	{
+		f >> &r;
+		cout << &r;
+	}
+}
 
 //Main
 int main()
 {
 	addPackage();
 }
-
-
