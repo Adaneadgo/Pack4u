@@ -28,7 +28,7 @@ typedef struct Hotel { string name = "none"; string address = "none"; }Hotel;
 typedef struct Package { int id = 0; Flight f; Hotel h; float rate = 0; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
 typedef struct Order { Date date; int packageId; Status status = in_process; int clientId; int agentId = 0; }Order; // redfine dfd - order approved only if agent accept
 //Other structs
-typedef struct Message { string from; string message; UserType type; }Message;
+typedef struct Message { Date d = today(); string from; UserType type; string message; }Message;
 typedef struct Cupon { int cuponCode; float discount; Date expiry; }Cupon; /// date or quantity 
 
 // Operators: read/write to/from file
@@ -47,9 +47,6 @@ ifstream& operator>>(ifstream& f, Package& p);
 //Message
 istream& operator>>(ifstream& f, Message& m);
 istream& operator>>(ifstream& f, Message& m);
-//Request
-ofstream& operator<<(ofstream& f, Request* r);
-ifstream& operator>>(ifstream& f, Request* r);
 //read/write to/from console
 //User
 ostream& operator<<(ostream& os, User& u);
@@ -68,9 +65,6 @@ istream& operator>>(istream& is, Package& p);
 //Message
 ostream& operator<<(ostream& os, Message& p);
 istream& operator>>(istream& is, Message& p);
-//Request
-ostream& operator<<(ostream& out, Request* r);
-istream& operator>>(istream& in, Request* r);
 
 //Features: 1.
 bool logOrRegist();
@@ -149,9 +143,18 @@ bool isDateVaild(Date d)
 	return true;
 }
 //Data basies
+bool writeNewMessageToFile(Message& newMessage)
+{
+	ofstream f("MessageDB.txt", ios::app);
+	if (!f) return false;
+	f << newMessage;
+	f.close();
+	return 1;
+}
 bool writeNewUserToFile(User& newUser)
 {
 	ofstream f("UsersDB.txt", ios::app);
+	if (!f) return false;
 	f << newUser;
 	f.close();
 	return 1;
@@ -159,6 +162,7 @@ bool writeNewUserToFile(User& newUser)
 bool writeNewPackageToFile(Package& newPackage)
 {
 	ofstream f("PackagesDB.txt", ios::app);
+	if (!f) return false;
 	f << newPackage;
 	f.close();
 	return 1;
@@ -491,58 +495,36 @@ ifstream& operator>>(ifstream& f, Package& p)
 }
 ostream& operator<<(ofstream& f, Message& m)
 {
+	f << "Date: " << m.d << endl;
 	f << "From: " << m.from << endl;
+	f << "To: " << m.type << endl;
 	f << "Body message: " << m.message << endl;
 	return f;
 }
 istream& operator>>(ifstream& f, Message& m)
 {
+	f >> m.d;
 	f >> m.from;
+	f >> m.type;
 	f >> m.message;
 	return f;
 }
 ostream& operator<<(ostream& os, Message& m)
 {
-	os << "From (user name): " << m.from << endl;
+	os << "Date: " << m.d;
+	os << "From: " << m.from << endl;
+	os << "To: " << m.type << endl;
 	os << "Body message: " << m.message;
 	return os;
 }
 istream& operator>>(istream& is, Message& m)
 {
+	is >> m.d;
 	cout << "From: " << endl;
 	is >> m.from;
 	cout << "Boody message: ";
 	is >> m.message;
 	return is;
-}
-ostream& operator<<(ostream& out, Request* r)
-{
-	out << "Sender ID: " << YELLOW << r->senderId << endl;
-	out << WHITE << "Content: " << GREEN << r->content << WHITE << endl << endl;
-	return out;
-}
-istream& operator>>(istream& in, Request* r)
-{
-	cout << "Enter your ID: ";
-	in >> r->senderId;
-	cout << "Enter your massege: ";
-	in >> r->content;
-
-	return in;
-}
-ifstream& operator>>(ifstream& f, Request* r)
-{
-	f >> r->senderId;
-	//f >> r->agentId;
-	f >> r->content;
-	return f;
-}
-ofstream& operator<<(ofstream& f, Request* r)
-{
-	f << r->senderId << endl;
-	//f << r->agentId << endl;
-	f << r->content << endl;
-	return f;
 }
 
 // write the new cline to the DB
@@ -634,5 +616,5 @@ void showRequest()
 //Main
 int main()
 {
-	addPackage();
+	Message s;
 }
