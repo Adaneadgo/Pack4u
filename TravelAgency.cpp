@@ -553,6 +553,26 @@ void showMessageFromManeger()
 		cout << m;
 	}
 }
+void writeMessageToFileFromClient()
+{
+	Message s;
+	s.type = agent;
+	cin >> s;
+	cout << s;
+	ofstream f("MessageFromClientDB.txt");
+	f << s;
+	f.close();
+}
+void writeMessageToFileFromManeger(UserType& t)
+{
+	Message s;
+	s.type = t;
+	cin >> s;
+	cout << s;
+	ofstream f("MessageFromManegerDB.txt");
+	f << s;
+	f.close();
+}
 //User Menu
 //Agent menu
 void removeAgentFromFile()
@@ -632,4 +652,7 @@ int main()
 	Message s;
 	cin >> s;
 	cout << s;
+	ofstream f("Message.txt");
+	f << s;
+	f.close();
 }
