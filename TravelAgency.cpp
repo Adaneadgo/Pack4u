@@ -96,9 +96,11 @@ bool isDateVaild(Date d);
 void removeAgentFromFile();
 
 /*------------------------------------------------------------------------*/
+//Global
 User* user = nullptr; // The global logged user
 Package* package = nullptr;
 Message* message = nullptr;
+Cupon cop;
 
 string strUserType(UserType& t)
 {
@@ -588,7 +590,6 @@ void agentMenu()
 void managerMenu()
 {
 	int choice;
-	Cupon cop;
 	do {
 		cout << "\n\n\t1.View Agent Options";
 		cout << "\n\n\t2.Add an agent";
