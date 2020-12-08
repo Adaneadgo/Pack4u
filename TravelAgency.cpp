@@ -1082,11 +1082,7 @@ void managerMenu()
 		case 3: //removeAgentFromFile();
 			break;
 		case 4:
-			cout << "creating a cupon:" << endl;
-			cin >> cop;
-			cout << "Good! now please send it to client" << endl;
-			cin >> m;
-			writeNewMessageFromManegerToFile(m, client);
+			//
 			break;
 		case 5:
 			cin >> m;
