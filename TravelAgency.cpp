@@ -111,9 +111,7 @@ User* user = nullptr; // The global logged user
 int main()
 {
 	
-	Message m1;
-	Message m2;
-	Message m3;
+	agentMenu();
 
 
 	
@@ -1081,7 +1079,7 @@ void managerMenu()
 			break;
 		case 2: userRegistration(agent);
 			break;
-		case 3: removeAgentFromFile();
+		case 3: //removeAgentFromFile();
 			break;
 		case 4:
 			cout << "creating a cupon:" << endl;
