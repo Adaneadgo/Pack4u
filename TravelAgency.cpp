@@ -13,14 +13,16 @@ using namespace std;
 typedef enum  UserType { client, agent, manager } UserType;
 typedef enum  Status { Canceled, in_process, Confirmed } Status;
 
-//Structs: user defention
+// Structs: user defention
 typedef struct User { int id = 0; string password; string userName; UserType type = client; } User;
-//package and order defention
+
+// package and order defention
 typedef struct Date { int day = 0; int month = 0; int year = 0; }Date; // date libary **
 typedef struct Flight { string destination = "none"; }Flight;
 typedef struct Hotel { string name = "none"; string address = "none"; }Hotel;
 typedef struct Package { Date out; Date in; string id="NONE00"; Flight f; Hotel h; float rate = 0 ; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
 typedef struct Order { int id =999;  Date date; string packageId = "NONE00"; Status status = in_process; int clientId = 0; int agentId = 0; } Order;
+
 // other structs
 typedef struct Message { Date d; string sender; UserType to = client; string message; }Message;
 typedef struct Cupon { int cuponCode; float discount; Date expiry; }Cupon;
@@ -97,78 +99,63 @@ bool requestsFromClient();
 void agentMenu();
 void manegerMenu();
 
-
-//others
+// Others
 string strUserType(UserType& u);
 string strStatus(Status& s);
 Date today();
 void skipLines(ifstream& f, int n);
-
-
 User* user = nullptr; // The global logged user
 
-
-//Main
+// Main
 int main()
 {
-	
-	agentMenu();
-
-
 	
 		
 }
 
-
+// Functions
 bool userRegistration(UserType t)
 {
-	// allocate and creat the new user
+	// Allocate and creat the new user
 	User* newClient = new User;
 	cout << "put the following details:" << endl;
 	cin >> *newClient;
-	newClient->type = t; // asaing the type
-
-	// write the new cline to the DB
+	newClient->type = t; // Asaing the type
+	// Write the new cline to the DB
 	writeNewUserToFile(*newClient);
-
-	//if no user been logged- login the new user
+	// If no user been logged- login the new user
 	if (!user)
 		user = newClient;
-
-	//if everything went well
+	// If everything went well
 	return true;
-
 }
 bool login()
 {
-	
-	int id; // details needed to singed in
+	int id; // Details needed to singed in
 	string password;
 	cout << "please put your id: ";
 	cin >> id;
 	cout << "please put you password: ";
 	cin >> password;
-
-	// creat the new login to the system
+	// Creat the new login to the system
 	user = new User;
-
-	// open the users DB to find a match
-	ifstream f("UsersDB.txt");
+	// Open the users DB to find a match
+	ifstream f("UsersDB.txt"); // Read user file
 	while (f >> *user)
 	{
 		if (user->id == id && user->password == password)
 		{f.close(); return true; }
 	}
-
-	// if no math been founded delete the allocation and close
+	// If no math been founded delete the allocation and close
 	f.close();
 	delete user;
+	//If everything was not right
 	return false;
 }
 bool logOrRegist()
 {
-	// if no user is looged and and login is needed!
-	// user going to have to select login or regigst
+	// If no user is looged and and login is needed!
+	// User going to have to select login or regigst
 	int input;
 	do {
 		cout << "please select:" << endl;
@@ -181,36 +168,29 @@ bool logOrRegist()
 			userRegistration(client);
 
 	} while (input != 1 && input != 2);
-
-	// return true if the log been succeful
+	// Return true if the log been succeful
 	return user != nullptr;
-
 }
 bool makeAnOrder(Package& p)
 {
-
+	// Allocate and creat the new order
 	Order o;
 	int i = 0;
-	ifstream of("OrdersDB.txt");
+	ifstream of("OrdersDB.txt"); // Read order file
 	while (of >> o)
 	{
 		i++;
 	}
 	of.close();
-	
-
-	// put the the need deatils automatcly
+	// Put the the need deatils automatcly
 	Order order = { 1000 + i,today(), p.id, in_process, user->id, 0 };
 	cout << endl << "Summary" << endl << order << endl << p << endl;
-
-	// send user to pay
+	// Send user to pay
 	paymentSystem(p.price);
-
-	// put the new order in the orders DB
+	// Put the new order in the orders DB
 	ofstream f("OrdersDB.txt", ios::app);
 	f << order;
 	f.close();
-
 	return 1;
 }
 bool paymentSystem(float price)
@@ -220,27 +200,21 @@ bool paymentSystem(float price)
 	cout << "Payment" << endl;
 	cout << "put your coupon code if you have" << endl;
 	cin >> cupon;
-	// if coupon is valid // lower pric
-
+	// If coupon is valid // lower pric
 	cout << "please put you credit card details:" << endl << "xxxxxxx mm/yy cvx" << endl;
 	cin >> card;
-
 	cout << "THANK YOU AND FUCK YOU" << endl;
 	return 1;
-
 }
-
 bool addPackage()
 {
 	/*if (user->type == agent ) return false;*/
-
+	// Allocate and creat the new package
 	Package newPackage;
 	cout << "put the following details: " << endl;
 	cin >> newPackage;
-
 	writeNewPackageToFile(newPackage);
-
-	//if everything went well
+	// If everything went well
 	return true;
 }
 bool updatePack(Package& p)
@@ -254,27 +228,21 @@ bool updatePack(Package& p)
 		{
 			cout << "Enter flight destination: ";
 			cin >> p.f.destination;
-
 			cout << "Enter flight departure date:" << endl;
 			cin >> p.out;
-
 			cout << "Enter flight return date:" << endl;
 			cin >> p.in;
-
 		}
 		else if (ch == 'N')
 		{
 			p.f.destination = "none";
-
 			p.out = { 0,0,0 };
-
 			p.in = { 0,0,0 };
 			break;
 		}
 		else
 			cout << "Bad input! Try again." << endl;
 	} while (ch != 'Y');
-
 	do
 	{
 		cout << "Include hotel? Y/N" << endl;
@@ -283,7 +251,6 @@ bool updatePack(Package& p)
 		{
 			cout << "Hotel name: ";
 			cin >> p.h.name;
-
 			cout << "Hotel address: ";
 			cin >> p.h.address;
 
@@ -292,86 +259,52 @@ bool updatePack(Package& p)
 		{
 			p.h.name = "none";
 			p.h.address = "none";
-
 			break;
 		}
 		else
 			cout << "Bad input! Try again." << endl;
-
 	} while (ch != 'Y');
-
 	cout << "Enter package price: ";
 	cin >> p.price;
-
 	cout << "Enter package quantity: ";
 	cin >> p.quantity;
-
+	// If everything went well
 	return true;
 }
 void editPackage(vector<Package>& arr, int index)
 {
-
 	updatePack(arr[index]);
-
 	ofstream f;
-
 	f.open("Package.txt");
-
 	for (int i = 0; i < arr.size(); ++i)
 		f << arr[i];
-
-
 	f.close();
-
-
 }
 bool viewPackages()
 {
 	int ch1, ch2;
-
-
 	Package p;
-
 	vector<Package> arr;
-
 	ifstream f;
 	f.open("PackagesDB.txt");
-
-	while (f >> p)
-	{ arr.push_back(p); }
-
-
+	while (f >> p) { arr.push_back(p); }
 	f.close();
-
-	////////////////////////////////////////////////////
-
-	cout << "Press 1 to order a package" << endl;
-
-	if (user && (user->type==agent || user->type==manager)) ///// agent/manager only
-		cout << "Press 2 to edit packages" << endl;
-
-	cout << "Press 3 to sort" << endl;
-
+	cout << "Press [1] to order a package" << endl;
+	if (user && (user->type==agent || user->type==manager)) // Agent/manager only
+		cout << "Press [2] to edit packages" << endl;
+	cout << "Press [3] to sort" << endl;
 	cout << endl << endl;
-
 	for (int i = 0; i < arr.size(); ++i)
 		cout << arr[i] << endl;
-
 	cin >> ch1;
-
 	if (ch1 == 1 || ch1 == 2)
 	{
 		for (int i = 0; i < arr.size(); ++i)
 			cout << i + 1 << arr[i] << endl;
-
 		cout << endl << endl;
-
-		cout << " Enter choice: ";
-
+		cout << "Press choice: ";
 		cin >> ch2;
-
 		--ch2;
-
 		for (int i = 0; i < arr.size(); ++i)
 			if (arr[i].id == arr[ch2].id)
 			{
@@ -380,30 +313,25 @@ bool viewPackages()
 					makeAnOrder(arr[ch2]);
 					break;
 				}
-				if (ch1 == 2 && (user->type == agent|| user->type == manager))
+				if (ch1 == 2 && (user->type == agent || user->type == manager))
 				{
 					editPackage(arr, ch2);
 					break;
-
 				}
-
 			}
-
 	}
-
 	if (ch1 == 3)
-
 		sortPackages(arr);
 	return 1;
 }
 bool sortPackages(vector<Package>& arr)
-{
+{	
 	int ch;
-
-	cout << "Press 1 to sort by destination" << endl;
-	cout << "Press 2 to sort by price range" << endl;
-	cout << "Press 3 to sort by departure date" << endl;
-	cout << "Press 4 for Popular Packages" << endl << endl;
+	cout << "Press [1] to sort by destination" << endl;
+	cout << "Press [2] to sort by price range" << endl;
+	cout << "Press [3] to sort by departure date" << endl;
+	cout << "Press [4] for Popular Packages" << endl;
+	cout << "Press [0] for back to last page" << endl << endl;
 	cin >> ch;
 
 	Package p;
@@ -412,8 +340,6 @@ bool sortPackages(vector<Package>& arr)
 	Date d;
 
 	int r, index = 0;
-
-
 
 	switch (ch)
 	{
@@ -428,64 +354,50 @@ bool sortPackages(vector<Package>& arr)
 				cout << arr[i] << endl;
 		}
 		break;
-
 	case 2:
-
 		cout << "Enter minimum price: ";
 		cin >> min;
-
 		cout << "Enter max price: ";
 		cin >> max;
-
 		for (int i = 1, j = 0; i < arr.size(); ++i)
 		{
 			if ((arr[i].price > min) && (arr[i].price < max))
 				cout << arr[i] << endl;
 		}
 		break;
-
 	case 3:
-
 		cout << "Enter requested departure date: ";
 		cin >> d;
-
 		for (int i = 1, j = 0; i < arr.size(); ++i)
 			if (arr[i].out == d)
 				cout << arr[i] << endl;
 		break;
-
 	case 4:
-
-
-
 		for (int i = 0; i < arr.size(); ++i)
 		{
 			if (arr[i].rate >= goodRate)
 				cout << arr[i] << endl;
 		}
+	default:
+		cout << "\n\n\tTRY AGAIN"; // Wrong choice
+		break;
 
-	}
-	
+	} while (choice != 0);
 	return 1;
 }
-
 bool trackOrder()
 {
 	vector<Order> arr;
 	Order temp;
-	ifstream f("OrdersDB.txt");
-
+	ifstream f("OrdersDB.txt"); // Read order file
 	Date d;
 	string p;
 	Status s;
 
-	while(f>>temp)
-	{ arr.push_back(temp); }
-
-
+	while(f>>temp) { arr.push_back(temp); }
 	cout << "View Orders By:" << endl;
-	cout << "1.by Order Date" << endl << "2.by Package" << endl << "3.by status" << endl;
-	cout << "0. to exit" << endl;
+	cout << "Press [1] to sort by Order Date" << endl << "Press [2] to sort by Package" << endl << "Press [3] to sort by status" << endl;
+	cout << "Press [0] to return to the last page" << endl;
 	int userChoise;
 	cin >> userChoise;
 	do {
@@ -493,6 +405,7 @@ bool trackOrder()
 		switch (userChoise)
 		{
 		case 1:
+			// Sort by date
 			cout << "Put the date:" << endl;
 			cin >> d;
 			for (int i = 0; i < arr.size(); i++)
@@ -502,19 +415,12 @@ bool trackOrder()
 			}
 			break;
 		case 2:
-
-			// SHIT!!!
-
-
-
-
-
-
+			// Sort by package
 			break;
 		case 3:
-
+			// Sort by status
 			cout << "what status: " << endl;
-			cout << "(1)canceld" <<endl <<"(2)in proccess " <<endl<< "(3)confimed" << endl;
+			cout << "(1)canceld" << endl << "(2)in proccess " << endl << "(3)confimed" << endl;
 			cin >> userChoise;
 			s = Status(userChoise - 1);
 			for (int i = 0; i < arr.size(); i++)
@@ -522,27 +428,20 @@ bool trackOrder()
 				if (arr[i].status == s)
 					cout << arr[i] << endl << endl;
 			}
-
-			break;
-		case 0:
 			break;
 		default:
-			cout << "Worng key!" << endl;
+			cout << "TRY AGAIN" << endl; // Wrong choice
 			break;
 		}
-
-	} while (!userChoise);
-
+	} while (userChoise != 0); // If the user chooses to return to the previous menu
 	return 1;
 }
 bool viewClientOrders(int userId)
 {
 	Order temp;
 	vector<Order> arr; 
-	ifstream f("OrdersDB.txt");
-	while (f >> temp)
-	{ arr.push_back(temp); }
-
+	ifstream f("OrdersDB.txt"); // // Read order file
+	while (f >> temp) { arr.push_back(temp); }
 	for (int i = 0; i < arr.size(); i++)
 	{
 		if (arr[i].clientId == userId)
@@ -557,9 +456,11 @@ bool cancelAnOrder(vector<Order>& arr,int orderId)
 		if (arr[i].id == orderId)
 		{
 			arr[i].status = Canceled;
+			// If everything went well
 			return true;
 		}
 	}
+	//If everything was not right
 	return false;
 }
 bool approveOrder(vector<Order>& arr,int orderId)
@@ -572,50 +473,43 @@ bool approveOrder(vector<Order>& arr,int orderId)
 			arr[i].status = Confirmed;
 		}
 	}
+	//If everything was not right
 	return false;
 }
 bool rateByOrder(vector<Order>& o_arr,int orderId)
 {
 	int packageId;
-
-	// load packages from file
+	// Load packages from file
 	Package tempPackage;
 	vector<Package> p_arr;
-	ifstream rpf("PackagesDB.txt"); // read package file
-	while (rpf >> tempPackage)
-	{
-		p_arr.push_back(tempPackage);
-	}
+	ifstream rpf("PackagesDB.txt"); // Read package file
+	while (rpf >> tempPackage) { p_arr.push_back(tempPackage); }
 	rpf.close();
-
-	
-
-	
-
-	// track the order
+	// Track the order
 	for (int i = 0; i < o_arr.size(); i++)
 	{
 		if (o_arr[i].id == orderId)
 		{
 
-			// track the package
+			// Track the package
 			for (int j = 0; j < p_arr.size(); j++)
 			{
 				if (p_arr[j].id == o_arr[i].packageId)
 				{
-					rateApackage(p_arr[j]); // rate
-					ofstream wpf("PackagesDB.txt"); //rewrite package file
+					rateApackage(p_arr[j]); // Rate
+					ofstream wpf("PackagesDB.txt"); //Rewrite package file
 					for (int i = 0; i < p_arr.size(); i++)
 						wpf << p_arr[i];
 				}
 			}
 		}
 	}
+	//If everything was not right
 	return false;
-
 }
 bool rateApackage(Package& p)
 {
+	// The client has the option to rate a package after its return flight date has passed
 	cout << "Enter your rate for this package: ";
 	float temp;
 	cin >> temp;
@@ -626,17 +520,18 @@ bool rateApackage(Package& p)
 
 void showMessagesFromClient()
 {
+	// The client has the ability to leave a request to contact the agent
 	Message m;
-	ifstream f("MessageFromClientDB.txt");
+	ifstream f("MessageFromClientDB.txt");// Read message file
 	while (f >> m)
 	{
 		cout << m << endl;;
 	}
-
 	f.close();
 }
 void showMessagesFromManeger(UserType t)
 {
+	// Agents and customers will be able to view the mailings they receive from the manager
 	Message m;
 	ifstream f("MessageFromManegerDB.txt");
 	while (f>>m)
@@ -649,7 +544,7 @@ void showMessagesFromManeger(UserType t)
 
 bool writeNewUserToFile(User& newClient)
 {
-	// write New User To File
+	// Write new user to file
 	ofstream f("UsersDB.txt", ios::app);
 	f << newClient;
 	f.close();
@@ -657,6 +552,7 @@ bool writeNewUserToFile(User& newClient)
 }
 bool writeNewMessageFromClientToFile(Message& newMessage)
 {
+	// Write new message from client to file
 	ofstream f("MessageFromClientDB.txt", ios::app);
 	if (!f) return false;
 	f << newMessage;
@@ -665,6 +561,7 @@ bool writeNewMessageFromClientToFile(Message& newMessage)
 }
 bool writeNewMessageFromManegerToFile(Message& newMessage, UserType t)
 {
+	// Write new message from maneger to file
 	newMessage.to = t;
 	ofstream f("MessageFromManegerDB.txt", ios::app);
 	if (!f) return false;
@@ -674,6 +571,7 @@ bool writeNewMessageFromManegerToFile(Message& newMessage, UserType t)
 }
 bool writeNewPackageToFile(Package& newPackage)
 {
+	// Write new package to file
 	ofstream f("PackagesDB.txt", ios::app);
 	if (!f) return false;
 	f << newPackage;
@@ -683,9 +581,9 @@ bool writeNewPackageToFile(Package& newPackage)
 
 bool clientMessageBox()
 {
-	// cupon
+	// A client will be able to view mailings received from a manager
 	Message m;
-	ifstream f("MessageFromManegerDB.txt");
+	ifstream f("MessageFromManegerDB.txt"); // Read message file
 	while (f >> m)
 	{
 		if (m.to == client)
@@ -696,9 +594,10 @@ bool clientMessageBox()
 }
 bool agentMessageBox()
 {
+	// An agent will be able to view mailings received from a manager
 	Message m;
 	cout << "Messages from the Manger" << endl << endl;
-	ifstream f("MessageFromManegerDB.txt");
+	ifstream f("MessageFromManegerDB.txt"); // Read message file
 	while (f >> m)
 	{
 		if (m.to == agent)
@@ -709,13 +608,13 @@ bool agentMessageBox()
 }
 bool requestsFromClient()
 {
+	// An agent will be able to view contact messages left by customers
 	Message m;
 	vector<Message> arr;
-	ifstream f("MessageFromClientDB.txt");
+	ifstream f("MessageFromClientDB.txt"); // Read message file
 	while (f >> m)
 		arr.push_back(m);
 	f.close();
-
 	char ch;
 	for (int i = 0; i < arr.size(); i++)
 	{
@@ -723,20 +622,16 @@ bool requestsFromClient()
 		cout << endl << "(" << arr.size() - i << ") messages remain" << endl;
 		cout << "Countinue ? Y/N: " << endl;
 		cin >> ch;
-
 		if (ch == 'Y')
 			continue;
-
 		if (ch == 'N')
 			break;
 	}
 	return 1;
 }
-
-
-
 string strUserType(UserType& t)
 {
+	// Convert user type to string
 	switch (t)
 	{
 	case client:
@@ -751,37 +646,35 @@ string strUserType(UserType& t)
 }
 string strStatus(Status& s)
 {
-	// convert status to string
+	// Convert status to string
 	switch (s)
 	{
 	case Canceled:
-		return "Canceled";
+		return "Canceled!";
 	case in_process:
-		return "in process";
+		return "in process!";
 	case Confirmed:
-		return "Confirmed";
+		return "Confirmed!";
 	default:
 		return "";
 	}
 }
 Date today()
 {
-	time_t t = time(NULL); // set the current time
-	tm time = *localtime(&t); // convert to dd.mm.yyyy format
+	time_t t = time(NULL); // Set the current time
+	tm time = *localtime(&t); // Convert to dd.mm.yyyy format
 	Date d = { time.tm_mday,time.tm_mon + 1,time.tm_year + 1900 };
 	return d;
 }
 void skipLines(ifstream& f, int n)
 {
-	// skip to the wanted line in text file
+	// Skip to the wanted line in text file
 	for (int i = 0; i < n; i++)
 		f.ignore(numeric_limits<streamsize>::max(), '\n');
 }
-
-
 bool operator<(Date& d1, Date& d2)
 {
-	if (d1.year > d2.year)
+	if (d1.year > d2.year) 
 		return false;
 	else if (d1.year < d2.year)
 		return true;
@@ -793,22 +686,20 @@ bool operator<(Date& d1, Date& d2)
 		return false;
 	else if (d1.day < d2.day)
 		return true;
-
-
-
 }
 bool operator==(Date& d1, Date& d2)
 {
+	// Comparison between two dates
 	if ((d1.year == d2.year) && (d1.month == d2.month) && (d1.day == d2.day))
+		// If everything went well
 		return true;
 	else
+		//If everything was not right
 		return false;
-
-
 }
-
+// Operator
 ostream& operator<<(ofstream& f, User& u)
-{
+{	// Read user from file
 	f << u.id << endl;
 	f << u.password << endl;
 	f << u.userName << endl;
@@ -816,7 +707,7 @@ ostream& operator<<(ofstream& f, User& u)
 	return f;
 }
 istream& operator>>(ifstream& f, User& u)
-{
+{	// Write the new user to file
 	f >> u.id;
 	f >> u.password;
 	f >> u.userName;
@@ -824,15 +715,14 @@ istream& operator>>(ifstream& f, User& u)
 	return f;
 }
 ostream& operator<<(ostream& os, User& u)
-{
+{	// Read user from console
 	os << strUserType(u.type);
 	os << " Name: " << u.userName << endl;
 	os << "Id: " << u.id << endl;
 	return os;
 }
 istream& operator>>(istream& is, User& u)
-{
-	// getting the new user client details
+{	// Write the new user details
 	cout << "Id: ";
 	is >> u.id;
 	cout << "Password ";
@@ -841,35 +731,31 @@ istream& operator>>(istream& is, User& u)
 	is >> u.userName;
 	return is;
 }
-
 istream& operator>>(ifstream& f, UserType& u)
-{
+{	// Read user type from file
 	int i;
 	f >> i;
 	u = UserType(i);
 	return f;
 }
 istream& operator>>(ifstream& f, Status& u)
-{
+{	// Read status from file
 	int i;
 	f >> i;
 	u = Status(i);
 	return f;
 }
-
 ostream& operator<<(ostream& os, Order& o)
-{
+{	// Write new order to console
 	os << "Date: " <<o.date << endl;
 	os << "Client Id: " << o.clientId << endl;
 	os << "Order Id: " << o.id << endl;
 	os <<"Package Id: "<< o.packageId << endl;
 	os << "Order status: " << strStatus(o.status);
-	return os;
-		
+	return os;	
 }
 ostream& operator<<(ofstream& f, Order& o)
-{
-
+{	// Read order from file	
 	f << o.date << endl;
 	f << o.clientId << endl;
 	f << o.id << endl;
@@ -879,26 +765,24 @@ ostream& operator<<(ofstream& f, Order& o)
 	return f;
 }
 istream& operator>>(ifstream& f, Order& o)
-{
+{	// Weite new order from file
 	f >> o.date;
 	f >> o.clientId;
 	f >> o.id;
 	f >> o.packageId;
 	f >> o.status;
 	f >> o.agentId;
-
 	return f;
 }
-
 ostream& operator<<(ofstream& f, Date& d)
-{
+{	// Read date from file
 	f << d.day << ".";
 	f << d.month << ".";
 	f << d.year;
 	return f;
 }
 istream& operator>>(ifstream& f, Date& d)
-{
+{	// Write new date to file
 	char dot;//for save dot
 	f >> d.day;
 	f >> dot;
@@ -908,7 +792,7 @@ istream& operator>>(ifstream& f, Date& d)
 	return f;
 }
 ostream& operator<<(ostream& os, Date& d)
-{
+{	// Read date from console
 	os << d.day << ".";
 	os << d.month << ".";
 	os << d.year;
@@ -916,6 +800,7 @@ ostream& operator<<(ostream& os, Date& d)
 }
 istream& operator>>(istream& is, Date& d)
 {
+	// Write new date to console
 	cout << "day: ";
 	is >> d.day;
 	cout << "month: ";
@@ -924,9 +809,8 @@ istream& operator>>(istream& is, Date& d)
 	is >> d.year;
 	return is;
 }
-
 ostream& operator<<(ostream& os, Package& p)
-{
+{	// Read package from cosole
 	os << "Package id: " << p.id << endl;
 	os << "Package price: " << p.price << endl;
 	os << "Package quantity: " << p.quantity << endl;
@@ -939,7 +823,7 @@ ostream& operator<<(ostream& os, Package& p)
 	return os;
 }
 ofstream& operator<<(ofstream& f, Package& p)
-{
+{	// Read package from file
 	f << p.id << endl;
 	f << p.f.destination << endl;
 	f << p.out << endl;
@@ -954,16 +838,14 @@ ofstream& operator<<(ofstream& f, Package& p)
 }
 istream& operator>>(istream& is, Package& p)
 {
-
+	// Write new package to console
 	cout << "Enter package id: ";
 	is >> p.id;
-
 	updatePack(p);
-
 	return is;
 }
 ifstream& operator>>(ifstream& f, Package& p)
-{
+{	// Write package from file
 	f >> p.id;
 	f >> p.f.destination;
 	f >> p.out;
@@ -976,9 +858,8 @@ ifstream& operator>>(ifstream& f, Package& p)
 	f >> p.quantity;
 	return f;
 }
-
 ostream& operator<<(ofstream& f, Message& m)
-{
+{	// Read message from file	
 	f << m.d << endl;
 	f << m.sender << endl;
 	f  << m.to << endl;
@@ -986,7 +867,7 @@ ostream& operator<<(ofstream& f, Message& m)
 	return f;
 }
 istream& operator>>(ifstream& f, Message& m)
-{
+{	// Write new message to file
 	f >> m.d;
 	f >> m.sender;
 	f >> m.to;
@@ -994,7 +875,7 @@ istream& operator>>(ifstream& f, Message& m)
 	return f;
 }
 ostream& operator<<(ostream& os, Message& m)
-{
+{	// Read message from console 
 	os << "Sent at : " << m.d << endl;
 	os << "From: " << m.sender << endl;
 	os << "Body message: " << m.message;
@@ -1002,15 +883,15 @@ ostream& operator<<(ostream& os, Message& m)
 }
 istream& operator>>(istream& is, Message& m)
 {
+	// Write new message to console
 	m.d = today();
 	m.sender = user->userName;
 	cout << "Body message: ";
 	is >> m.message;
 	return is;
 }
-
 ostream& operator<<(ostream& os, Cupon& c)
-{
+{	// Read cupon from console
 	os << "Cupon code: " << c.cuponCode << endl;
 	os << "Discount amount: " << c.discount << endl;
 	os << "Expiry date: " << c.expiry << endl;
@@ -1018,26 +899,26 @@ ostream& operator<<(ostream& os, Cupon& c)
 }
 istream& operator>>(istream& is, Cupon& c)
 {
+	// Write new cupon to console
 	cout << "Hello manager, please enter code for discount (4 digits): " << endl;
 	is >> c.cuponCode;
-	cout << "Please enter discount amount: " << endl;
+	cout << "Enter discount amount: " << endl;
 	is >> c.discount;
 	cout << "Enter day, month and year for expiry date: " << endl;
 	is >> c.expiry;
 	return is;
 }
-//Agent menu
+// Agent menu
 void agentMenu()
 {
 	int choice;
 	do {
-		cout << "\n\n\t1.View packages";
-		cout << "\n\n\t2.View client";
-		cout << "\n\n\t3.Add a package";
-		cout << "\n\n\t4.Remove a package";
-		cout << "\n\n\t5.Message box";
-		cout << "\n\n\t6.Exit";
-
+		cout << "\n\n\tPress [1] to view packages";
+		cout << "\n\n\tPress [2] to view client";
+		cout << "\n\n\tPress [3] to add a package";
+		cout << "\n\n\tPress [4] to remove a package from data base";
+		cout << "\n\n\tPress [5] for a mailbox";
+		cout << "\n\n\tPress [0] to exit";
 		cin >> choice;
 		switch (choice)
 		{
@@ -1045,54 +926,53 @@ void agentMenu()
 			//view package
 			break;
 		case 2:
-			//view client
+			//view client // If the agent wants to view a client list
 			break;
-		case 3: addPackage();
+		case 3: addPackage(); // If the agent wants to add a package
 			break;
-		case 4: removePackage();
+		case 4: removePackage(); // If the agent wants to remove a package
 			break;
-		case 5: requestsFromClient();
-			//call login register func
+		case 5: requestsFromClient(); // If the agent wants to view messages from a manager or customer
 			break;
 		default:
-			cout << "\n\n\tTRY AGAIN";
+			cout << "\n\n\tTRY AGAIN"; // Wrong choice
 			break;
 		}
-	} while (choice != 6);
+	} while (choice != 0); // If the user chooses to return to the previous menu
 }
-//Manger menu
+// Manger menu
 void managerMenu()
 {
 	int choice;
 	do {
-		cout << "\n\n\t1.View Agent Options";
-		cout << "\n\n\t2.Add an agent";
-		cout << "\n\n\t3.Remove an agent";
-		cout << "\n\n\t4.Creat discaunt cupon and send to client";
-		cout << "\n\n\t5.Send message to agents";
-		cout << "\n\n\t6.Exit" << endl;
+		cout << "\n\n\tPress [1] to view Agent Options";
+		cout << "\n\n\tPress [2] to add an agent";
+		cout << "\n\n\tPress [3] to remove an agent";
+		cout << "\n\n\tPress [4] to creat discaunt";
+		cout << "\n\n\tPress [5] to send message to agents";
+		cout << "\n\n\tPress [0] to exit" << endl;
 		cin >> choice;
 		Message m;
 		switch (choice)
 		{
-		case 1: agentMenu();
+		case 1: agentMenu(); // If the manager wants to access the agents menu
 			break;
-		case 2: userRegistration(agent);
+		case 2: userRegistration(agent); // If the manager wants to add a new agent
 			break;
-		case 3: //removeAgentFromFile();
+		case 3: //removeAgentFromFile(); // If the manager wants to remove an agent
 			break;
-		case 4:
+		case 4:  // If the manager wants to generate a coupon code
 			//make a cupon
 			break;
-		case 5:
+		case 5:  // If the administrator wants to send a message
 			cin >> m;
 			writeNewMessageFromManegerToFile(m, agent);
 			break;
 		default:
-			cout << "\n\n\tTRY AGAIN";
+			cout << "\n\n\tTRY AGAIN"; // Wrong choice
 			break;
 		}
-	} while (choice != 6);
+	} while (choice != 0); // If the user chooses to return to the previous menu
 }
 
 
