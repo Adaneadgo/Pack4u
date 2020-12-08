@@ -1027,5 +1027,78 @@ istream& operator>>(istream& is, Cupon& c)
 	is >> c.expiry;
 	return is;
 }
+//Agent menu
+void agentMenu()
+{
+	int choice;
+	do {
+		cout << "\n\n\t1.View packages";
+		cout << "\n\n\t2.View client";
+		cout << "\n\n\t3.Add a package";
+		cout << "\n\n\t4.Remove a package";
+		cout << "\n\n\t5.Message box";
+		cout << "\n\n\t6.Exit";
+
+		cin >> choice;
+		switch (choice)
+		{
+		case 1:
+			//view package
+			break;
+		case 2:
+			//view client
+			break;
+		case 3:
+			break;
+		case 4:
+			cout << "\n\n\tEmail: pack4u@mail.com\n\tPhone: 1-700-800-800";
+			break;
+		case 5:
+			//call login register func
+			break;
+		default:
+			cout << "\n\n\tTRY AGAIN";
+			break;
+		}
+	} while (choice != 6);
+}
+//Manger menu
+void managerMenu()
+{
+	int choice;
+	do {
+		cout << "\n\n\t1.View Agent Options";
+		cout << "\n\n\t2.Add an agent";
+		cout << "\n\n\t3.Remove an agent";
+		cout << "\n\n\t4.Creat discaunt cupon and send to client";
+		cout << "\n\n\t5.Send message to agents";
+		cout << "\n\n\t6.Exit" << endl;
+		cin >> choice;
+		Message m;
+		switch (choice)
+		{
+		case 1: agentMenu();
+			break;
+		case 2: userRegistration(agent);
+			break;
+		case 3: removeAgentFromFile();
+			break;
+		case 4:
+			cout << "creating a cupon:" << endl;
+			cin >> cop;
+			cout << "Good! now please send it to client" << endl;
+			cin >> m;
+			writeNewMessageFromManegerToFile(m, client);
+			break;
+		case 5:
+			cin >> m;
+			writeNewMessageFromManegerToFile(m, agent);
+			break;
+		default:
+			cout << "\n\n\tTRY AGAIN";
+			break;
+		}
+	} while (choice != 6);
+}
 
 
