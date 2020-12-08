@@ -115,7 +115,6 @@ Date today();
 void skipLines(ifstream& f, int n);
 User* user = nullptr; // The global logged user
 
-<<<<<<< HEAD
 // Main
 int main()
 {
@@ -124,7 +123,6 @@ int main()
 }
 
 // Functions
-=======
 //Main
 int main()
 {
@@ -174,7 +172,6 @@ void agentMenu()
 		}
 	} while (choice != 6);
 }
-
 void managerMenu()
 {
 	int choice;
@@ -217,10 +214,6 @@ void managerMenu()
 		}
 	} while (choice != 6);
 }
-
-
-
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 bool userRegistration(UserType t)
 {
 	// Allocate and creat the new user
@@ -238,12 +231,8 @@ bool userRegistration(UserType t)
 }
 bool login()
 {
-<<<<<<< HEAD
 	int id; // Details needed to singed in
-=======
-
 	int id; // details needed to singed in
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 	string password;
 	cout << "please put your id: ";
 	cin >> id;
@@ -296,13 +285,8 @@ bool makeAnOrder(Package& p)
 		i++;
 	}
 	of.close();
-<<<<<<< HEAD
-	// Put the the need deatils automatcly
-=======
-
 
 	// put the the need deatils automatcly
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 	Order order = { 1000 + i,today(), p.id, in_process, user->id, 0 };
 	cout << endl << "Summary" << endl << order << endl << p << endl;
 	// Send user to pay
@@ -320,7 +304,6 @@ bool paymentSystem(float price)
 	float discount = 1;
 
 	cout << "Payment" << endl;
-<<<<<<< HEAD
 	cout << "put your coupon code if you have" << endl;
 	cin >> cupon;
 	// If coupon is valid // lower pric
@@ -328,19 +311,13 @@ bool paymentSystem(float price)
 	cin >> card;
 	cout << "THANK YOU AND FUCK YOU" << endl;
 	return 1;
-=======
 	cout << "put your coupon code if you have one" << endl;
 	cin >> code;
-
 	discount = readCoupon(code);
-
 	cout << "please put you credit card details:" << endl << "xxxxxxxx  mm/yy  cvc" << endl;
 	cin >> card;
 	cout << "Total price: " << price * discount << "$" << endl;
 	return 1;
-
-
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 }
 bool addPackage()
 {
@@ -423,33 +400,22 @@ bool viewPackages()
 	vector<Package> arr;
 	ifstream f;
 	f.open("PackagesDB.txt");
-<<<<<<< HEAD
 	while (f >> p) { arr.push_back(p); }
 	f.close();
 	cout << "Press [1] to order a package" << endl;
 	if (user && (user->type==agent || user->type==manager)) // Agent/manager only
 		cout << "Press [2] to edit packages" << endl;
 	cout << "Press [3] to sort" << endl;
-=======
-
 	while (f >> p)
 	{
 		arr.push_back(p);
 	}
 
-
 	f.close();
-
-	////////////////////////////////////////////////////
-
 	cout << "Press 1 to order a package" << endl;
-
 	if (user && (user->type == agent || user->type == manager)) ///// agent/manager only
 		cout << "Press 2 to edit packages" << endl;
-
 	cout << "Press 3 to sort" << endl;
-
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 	cout << endl << endl;
 	for (int i = 0; i < arr.size(); ++i)
 		cout << arr[i] << endl;
@@ -482,7 +448,7 @@ bool viewPackages()
 	return 1;
 }
 bool sortPackages(vector<Package>& arr)
-{	
+{
 	int ch;
 	cout << "Press [1] to sort by destination" << endl;
 	cout << "Press [2] to sort by price range" << endl;
@@ -539,12 +505,7 @@ bool sortPackages(vector<Package>& arr)
 		cout << "\n\n\tTRY AGAIN"; // Wrong choice
 		break;
 
-<<<<<<< HEAD
 	} while (choice != 0);
-=======
-	}
-
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 	return 1;
 }
 bool trackOrder()
@@ -555,17 +516,11 @@ bool trackOrder()
 	Date d;
 	string id;
 	Status s;
-
-<<<<<<< HEAD
 	while(f>>temp) { arr.push_back(temp); }
-=======
 	while (f >> temp)
 	{
 		arr.push_back(temp);
 	}
-
-
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 	cout << "View Orders By:" << endl;
 	cout << "Press [1] to sort by Order Date" << endl << "Press [2] to sort by Package" << endl << "Press [3] to sort by status" << endl;
 	cout << "Press [0] to return to the last page" << endl;
@@ -586,9 +541,7 @@ bool trackOrder()
 			}
 			break;
 		case 2:
-<<<<<<< HEAD
 			// Sort by package
-=======
 			cout << "Put the Package id" << endl;
 			cin >> id;
 
@@ -597,8 +550,6 @@ bool trackOrder()
 				if (arr[i].packageId == id)
 					cout << arr[i] << endl << endl;
 			}
-		
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 			break;
 		case 3:
 			// Sort by status
@@ -622,19 +573,15 @@ bool trackOrder()
 bool viewClientOrders(int userId)
 {
 	Order temp;
-<<<<<<< HEAD
 	vector<Order> arr; 
 	ifstream f("OrdersDB.txt"); // // Read order file
 	while (f >> temp) { arr.push_back(temp); }
-=======
 	vector<Order> arr;
 	ifstream f("OrdersDB.txt");
 	while (f >> temp)
 	{
 		arr.push_back(temp);
 	}
-
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 	for (int i = 0; i < arr.size(); i++)
 	{
 		if (arr[i].clientId == userId)
@@ -678,16 +625,7 @@ bool rateByOrder(vector<Order>& o_arr, int orderId)
 	ifstream rpf("PackagesDB.txt"); // Read package file
 	while (rpf >> tempPackage) { p_arr.push_back(tempPackage); }
 	rpf.close();
-<<<<<<< HEAD
 	// Track the order
-=======
-
-
-
-
-
-	// track the order
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 	for (int i = 0; i < o_arr.size(); i++)
 	{
 		if (o_arr[i].id == orderId)
@@ -719,8 +657,6 @@ bool rateApackage(Package& p)
 	p.numOfRates++;
 	return 1;
 }
-
-
 void showMessagesFromClient()
 {
 	// The client has the ability to leave a request to contact the agent
@@ -744,7 +680,6 @@ void showMessagesFromManeger(UserType t)
 	}
 	f.close();
 }
-
 bool writeNewUserToFile(User& newClient)
 {
 	// Write new user to file
@@ -764,11 +699,8 @@ bool writeNewMessageFromClientToFile(Message& newMessage)
 }
 bool writeNewMessageFromManegerToFile(Message& newMessage)
 {
-<<<<<<< HEAD
 	// Write new message from maneger to file
 	newMessage.to = t;
-=======
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 	ofstream f("MessageFromManegerDB.txt", ios::app);
 	if (!f) return false;
 	f << newMessage;
@@ -787,10 +719,7 @@ bool writeNewPackageToFile(Package& newPackage)
 
 bool clientMessageBox()
 {
-<<<<<<< HEAD
 	// A client will be able to view mailings received from a manager
-=======
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 	Message m;
 	ifstream f("MessageFromManegerDB.txt"); // Read message file
 	while (f >> m)
@@ -824,37 +753,27 @@ bool requestsFromClient()
 	while (f >> m)
 		arr.push_back(m);
 	f.close();
-<<<<<<< HEAD
 	char ch;
-=======
 
 	if (arr.size() == 0)
 	{
 		cout << "no new messages" << endl;
 		return false;
 	}
-
 	char ch = 'A';
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 	for (int i = 0; i < arr.size(); i++)
 	{
 		system("cls");
 		cout << arr[i] << endl;
-<<<<<<< HEAD
 		cout << endl << "(" << arr.size() - i << ") messages remain" << endl;
 		cout << "Countinue ? Y/N: " << endl;
 		cin >> ch;
-=======
-
 		if (arr.size() - 1 - i != 0)
 		{
 			cout << endl << "(" << arr.size() - i - 1 << ") messages remain" << endl;
 			cout << "Countinue ? Y/N: " << endl;
 			cin >> ch;
 		}
-
-		
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 		if (ch == 'Y')
 			continue;
 		if (ch == 'N')
@@ -862,9 +781,6 @@ bool requestsFromClient()
 	}
 	return 1;
 }
-<<<<<<< HEAD
-=======
-
 bool creatCoupon()
 {
 	Coupon c;
@@ -895,9 +811,6 @@ float readCoupon(int code)
 	return 1;
 
 }
-
-
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 string strUserType(UserType& t)
 {
 	// Convert user type to string
@@ -1015,23 +928,14 @@ istream& operator>>(ifstream& f, Status& u)
 	return f;
 }
 ostream& operator<<(ostream& os, Order& o)
-<<<<<<< HEAD
 {	// Write new order to console
-	os << "Date: " <<o.date << endl;
-=======
-{
+
 	os << "Date: " << o.date << endl;
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 	os << "Client Id: " << o.clientId << endl;
 	os << "Order Id: " << o.id << endl;
 	os << "Package Id: " << o.packageId << endl;
 	os << "Order status: " << strStatus(o.status);
-<<<<<<< HEAD
-	return os;	
-=======
 	return os;
-
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 }
 ostream& operator<<(ofstream& f, Order& o)
 {	// Read order from file	
@@ -1157,11 +1061,7 @@ istream& operator>>(ifstream& f, Message& m)
 ostream& operator<<(ostream& os, Message& m)
 <<<<<<< HEAD
 {	// Read message from console 
-	os << "Sent at : " << m.d << endl;
-=======
-{
 	os << "Sent at: " << m.d << endl;
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 	os << "From: " << m.sender << endl;
 	os << "Body message: " << m.message;
 	return os;
@@ -1177,15 +1077,14 @@ istream& operator>>(istream& is, Message& m)
 	return is;
 }
 <<<<<<< HEAD
-ostream& operator<<(ostream& os, Cupon& c)
+	ostream & operator<<(ostream & os, Cupon & c)
 {	// Read cupon from console
 	os << "Cupon code: " << c.cuponCode << endl;
-=======
+}
 
 ostream& operator<<(ostream& os, Coupon& c)
 {
 	os << "Cupon code: " << c.couponCode << endl;
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 	os << "Discount amount: " << c.discount << endl;
 	os << "Expiry date: " << c.expiry << endl;
 	return os;
@@ -1194,19 +1093,15 @@ istream& operator>>(istream& is, Coupon& c)
 {
 	// Write new cupon to console
 	cout << "Hello manager, please enter code for discount (4 digits): " << endl;
-<<<<<<< HEAD
 	is >> c.cuponCode;
 	cout << "Enter discount amount: " << endl;
-=======
 	is >> c.couponCode;
 	cout << "Please enter discount amount: " << endl;
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 	is >> c.discount;
 	cout << "Enter day, month and year for expiry date: " << endl;
 	is >> c.expiry;
 	return is;
 }
-<<<<<<< HEAD
 // Agent menu
 void agentMenu()
 {
@@ -1272,7 +1167,7 @@ void managerMenu()
 			break;
 		}
 	} while (choice != 0); // If the user chooses to return to the previous menu
-=======
+}
 ostream& operator<<(ofstream& f, Coupon& c)
 {
 	f << c.couponCode << endl;
@@ -1286,7 +1181,6 @@ istream& operator>>(ifstream& f, Coupon& c)
 	f >> c.discount;
 	f >> c.expiry;
 	return f;
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 }
 
 
