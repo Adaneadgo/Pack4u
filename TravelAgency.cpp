@@ -20,14 +20,10 @@ typedef struct User { int id = 0; string password; string userName; UserType typ
 typedef struct Date { int day = 0; int month = 0; int year = 0; }Date; // date libary **
 typedef struct Flight { string destination = "none"; }Flight;
 typedef struct Hotel { string name = "none"; string address = "none"; }Hotel;
-<<<<<<< HEAD
 typedef struct Package { Date out; Date in; string id="NONE00"; Flight f; Hotel h; float rate = 0 ; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
 typedef struct Order { int id =999;  Date date; string packageId = "NONE00"; Status status = in_process; int clientId = 0; int agentId = 0; } Order;
-
-=======
 typedef struct Package { Date out; Date in; string id = "NONE00"; Flight f; Hotel h; float rate = 0; int numOfRates = 0; float price = 0; int quantity = 0; } Package;
 typedef struct Order { int id = 999;  Date date; string packageId = "NONE00"; Status status = in_process; int clientId = 0; int agentId = 0; } Order;
->>>>>>> e99706affba472f052152c7f13efe02cf1101fd0
 // other structs
 typedef struct Message { Date d; string sender; UserType to = client; string message; }Message;
 typedef struct Coupon { int couponCode; float discount; Date expiry; }Cupon;
@@ -285,7 +281,6 @@ bool makeAnOrder(Package& p)
 		i++;
 	}
 	of.close();
-
 	// put the the need deatils automatcly
 	Order order = { 1000 + i,today(), p.id, in_process, user->id, 0 };
 	cout << endl << "Summary" << endl << order << endl << p << endl;
@@ -302,7 +297,6 @@ bool paymentSystem(float price)
 	int code;
 	string card;
 	float discount = 1;
-
 	cout << "Payment" << endl;
 	cout << "put your coupon code if you have" << endl;
 	cin >> cupon;
