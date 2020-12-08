@@ -94,7 +94,8 @@ bool clientMessageBox();
 bool agentMessageBox();
 bool requestsFromClient();
 
-
+void agentMenu();
+void manegerMenu();
 
 
 //others
@@ -1046,12 +1047,11 @@ void agentMenu()
 		case 2:
 			//view client
 			break;
-		case 3:
+		case 3: addPackage();
 			break;
-		case 4:
-			cout << "\n\n\tEmail: pack4u@mail.com\n\tPhone: 1-700-800-800";
+		case 4: removePackage();
 			break;
-		case 5:
+		case 5: requestsFromClient();
 			//call login register func
 			break;
 		default:
@@ -1082,7 +1082,7 @@ void managerMenu()
 		case 3: //removeAgentFromFile();
 			break;
 		case 4:
-			//
+			//make a cupon
 			break;
 		case 5:
 			cin >> m;
