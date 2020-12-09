@@ -1,5 +1,12 @@
+/*
+   Welcome to Pack4U Project, This is a Travel Agency program that is not use any class in it.
+   To properly use this code you need to download the .wav files and place them inside your folder where the .cpp of this code is located.
+   If you not gonna make it the code will crash and ask you for audio files, so make sure you have download all 5 .wav files.
+   This files located in out github and can be found here: https://github.com/SCE2020Team2/yesodot
+   In folder: "Audio for us".
+*/
+#pragma comment(lib, "winmm.lib")
 #define _CRT_SECURE_NO_WARNINGS
-
 #define RED "\033[1;31m" //color red
 #define GREEN "\033[1;32m" //color green
 #define YELLOW "\033[1;33m" //color yellow
@@ -8,12 +15,14 @@
 #define MAGENTA "\033[1;36m" //color magenta
 #define WHITE "\033[0m"    //color reset to white
 #define BLOCKCOLOR "\033[1;100;30m" //block of color
-
 #include<iostream>
 #include<fstream>
 #include<string>
 #include<ctime>
 #include<vector>
+#include <windows.h>
+#include <mmsystem.h>
+#include <stdlib.h>
 
 #define goodRate 4
 
@@ -135,6 +144,8 @@ void agentMenu();
 void clientMenu();
 void mainMenu();
 void aboutus();
+void intro();
+void logo();
 
 
 string enc(string s);
@@ -143,13 +154,14 @@ string dec(string s);
 //Main
 int main()
 {
+	intro();
 	mainMenu();
 
 }
 
 string enc(string s)
 {
-	for (int i = 0; i <s.length(); i++)
+	for (int i = 0; i < s.length(); i++)
 	{
 		if (s[i] == '\n')
 			continue;
@@ -175,7 +187,7 @@ void aboutus()
 
 	cout << "\n\n\tPack4U has been committed to bringing our clients the best in value and quality travel arrangements.";
 	cout << "\n\tWe are passionate about travel and sharing the world's wonders on the leisure travel side";
-	
+
 	int choice;
 	do {
 		cout << "\n\n\tfor more options:\n\t[1] See contact information\n\t[0] Back to the main menu\n\n\t";
@@ -201,6 +213,8 @@ void mainMenu()
 	int num, ch;
 	do
 	{
+		system("cls");
+		logo();
 		cout << "\n\n\t[1] View packages";
 		cout << "\n\n\t[2] Login/Register";
 		cout << "\n\n\t[3] About Us";
@@ -430,7 +444,7 @@ bool login()
 bool logOrRegist()
 {
 	// if no user is looged and and login is needed!
-	// user going to have to select login or regigst
+	// user going to have to select login or register
 	int input;
 	do {
 		cout << "\n\n\tplease select:" << endl;
@@ -564,7 +578,7 @@ bool updatePackage(Package& p)
 				cout << "Enter flight return date:" << endl;
 				cin >> p.in;
 				if (p.in < p.out)
-					cout <<endl<< "Return date is before departure date, try again!" << endl << endl;
+					cout << endl << "Return date is before departure date, try again!" << endl << endl;
 			} while (p.in < p.out);
 
 		}
@@ -1203,8 +1217,8 @@ bool managePackagesDB()
 	f.close();
 
 	do {
-		cout << "\n\tPress [1] to sort packages"  << "\n\tPress [2] to add package";
-		cout << "\n\tPress [3] to update package"<< "\n\tPress [4] to remove package";
+		cout << "\n\tPress [1] to sort packages" << "\n\tPress [2] to add package";
+		cout << "\n\tPress [3] to update package" << "\n\tPress [4] to remove package";
 		cout << "\n\tPress [0] to Return" << endl;
 		cin >> ch;
 
@@ -1506,7 +1520,7 @@ bool operator==(Date& d1, Date& d2)
 ostream& operator<<(ofstream& f, User& u)
 {
 	f << u.id << endl;
-	f << enc(u.password )<< endl;
+	f << enc(u.password) << endl;
 	f << enc(u.userName) << endl;
 	f << int(u.type) << endl;
 	return f;
@@ -1572,7 +1586,7 @@ ostream& operator<<(ofstream& f, Order& o)
 	f << o.date << endl;
 	f << o.clientId << endl;
 	f << o.id << endl;
-	f << enc(o.packageId)<< endl;
+	f << enc(o.packageId) << endl;
 	f << o.status << endl;
 	f << o.agentId << endl;
 	f << o.rated << endl;
@@ -1789,3 +1803,34 @@ istream& operator>>(ifstream& f, Coupon& c)
 }
 
 
+void intro()
+{
+	srand((unsigned)time(0));
+	if ((rand() % 2) == 1)
+		PlaySound(TEXT("startup01.wav"), NULL, SND_FILENAME | SND_ASYNC);
+	else
+		PlaySound(TEXT("startup02.wav"), NULL, SND_FILENAME | SND_ASYNC);
+	cout << PINK << "HHHH "; Sleep(35); cout << MAGENTA << "     HH     "; Sleep(35); cout << YELLOW << "   HHHH "; Sleep(35); cout << GREEN << "  H    H"; Sleep(35); cout << RED << " H   H"; Sleep(35); cout << BLUE << "  H     H" << endl; Sleep(35);
+	cout << PINK << "H   H"; Sleep(35); cout << MAGENTA << "    H  H    "; Sleep(35); cout << YELLOW << "  H    H"; Sleep(35); cout << GREEN << "  H  H  "; Sleep(35); cout << RED << " H   H"; Sleep(35); cout << BLUE << "  H     H" << endl; Sleep(35);
+	cout << PINK << "HHHH "; Sleep(35); cout << MAGENTA << "   H    H   "; Sleep(35); cout << YELLOW << " H      "; Sleep(35); cout << GREEN << "  HH    "; Sleep(35); cout << RED << " HHHHH"; Sleep(35); cout << BLUE << "  H     H" << endl; Sleep(35);
+	cout << PINK << "H    "; Sleep(35); cout << MAGENTA << "  HHHHHHHH  "; Sleep(35); cout << YELLOW << " H      "; Sleep(35); cout << GREEN << "  HH    "; Sleep(35); cout << RED << "     H"; Sleep(35); cout << BLUE << "  H     H" << endl; Sleep(35);
+	cout << PINK << "H    "; Sleep(35); cout << MAGENTA << " H        H "; Sleep(35); cout << YELLOW << "  H    H"; Sleep(35); cout << GREEN << "  H  H  "; Sleep(35); cout << RED << "     H"; Sleep(35); cout << BLUE << "  H     H" << endl; Sleep(35);
+	cout << PINK << "H    "; Sleep(35); cout << MAGENTA << "H          H"; Sleep(35); cout << YELLOW << "   HHHH "; Sleep(35); cout << GREEN << "  H    H"; Sleep(35); cout << RED << "     H"; Sleep(35); cout << BLUE << "   HHHHH " << endl; Sleep(35);
+	for (int i = 0; i < 48; i++)
+	{
+		cout << BLOCKCOLOR << " ";
+		Sleep(13);
+	}
+	cout << WHITE << endl;
+	system("pause");
+}
+void logo()
+{
+	cout << PINK << "HHHH " << MAGENTA << "     HH     " << YELLOW << "   HHHH " << GREEN << "  H    H" << RED << " H   H" << BLUE << "  H     H" << endl;
+	cout << PINK << "H   H" << MAGENTA << "    H  H    " << YELLOW << "  H    H" << GREEN << "  H  H  " << RED << " H   H" << BLUE << "  H     H" << endl;
+	cout << PINK << "HHHH " << MAGENTA << "   H    H   " << YELLOW << " H      " << GREEN << "  HH    " << RED << " HHHHH" << BLUE << "  H     H" << endl;
+	cout << PINK << "H    " << MAGENTA << "  HHHHHHHH  " << YELLOW << " H      " << GREEN << "  HH    " << RED << "     H" << BLUE << "  H     H" << endl;
+	cout << PINK << "H    " << MAGENTA << " H        H " << YELLOW << "  H    H" << GREEN << "  H  H  " << RED << "     H" << BLUE << "  H     H" << endl;
+	cout << PINK << "H    " << MAGENTA << "H          H" << YELLOW << "   HHHH " << GREEN << "  H    H" << RED << "     H" << BLUE << "   HHHHH " << endl;
+	cout << BLOCKCOLOR << "                                                " << WHITE;
+}
