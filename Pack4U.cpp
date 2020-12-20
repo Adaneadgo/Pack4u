@@ -1,5 +1,12 @@
+/*
+   Welcome to Pack4U Project, This is a Travel Agency program that is not use any class in it.
+   To properly use this code you need to download the .wav files and place them inside your folder where the .cpp of this code is located.
+   If you not gonna make it the code will crash and ask you for audio files, so make sure you have download all 5 .wav files.
+   This files located in out github and can be found here: https://github.com/SCE2020Team2/yesodot
+   In folder: "Audio for us".
+*/
+#pragma comment(lib, "winmm.lib")
 #define _CRT_SECURE_NO_WARNINGS
-
 #define RED "\033[1;31m" //color red
 #define GREEN "\033[1;32m" //color green
 #define YELLOW "\033[1;33m" //color yellow
@@ -8,12 +15,14 @@
 #define MAGENTA "\033[1;36m" //color magenta
 #define WHITE "\033[0m"    //color reset to white
 #define BLOCKCOLOR "\033[1;100;30m" //block of color
-
 #include<iostream>
 #include<fstream>
 #include<string>
 #include<ctime>
 #include<vector>
+#include <windows.h>
+#include <mmsystem.h>
+#include <stdlib.h>
 
 #define goodRate 4
 
@@ -135,6 +144,8 @@ void agentMenu();
 void clientMenu();
 void mainMenu();
 void aboutus();
+void intro();
+void logo();
 
 
 string enc(string s);
@@ -143,13 +154,14 @@ string dec(string s);
 //Main
 int main()
 {
+	intro();
 	mainMenu();
 
 }
 
 string enc(string s)
 {
-	for (int i = 0; i <s.length(); i++)
+	for (int i = 0; i < s.length(); i++)
 	{
 		if (s[i] == '\n')
 			continue;
@@ -171,11 +183,12 @@ string dec(string s)
 
 void aboutus()
 {
-
+	//about us info
 
 	cout << "\n\n\tPack4U has been committed to bringing our clients the best in value and quality travel arrangements.";
-	cout << "\n\tWe are passionate about travel and sharing the world's wonders on the leisure travel side";
-	
+	cout << "\n\tWe are passionate about travel and sharing the world's wonders on the leisure travel side.";
+	cout << "\n\tWe hope you have a great time with out software.";
+
 	int choice;
 	do {
 		cout << "\n\n\tfor more options:\n\t[1] See contact information\n\t[0] Back to the main menu\n\n\t";
@@ -198,9 +211,14 @@ void aboutus()
 }
 void mainMenu()
 {
+
+	////Menu for visitors and unregistered users
+
 	int num, ch;
 	do
 	{
+		system("cls");
+		logo();
 		cout << "\n\n\t[1] View packages";
 		cout << "\n\n\t[2] Login/Register";
 		cout << "\n\n\t[3] About Us";
@@ -249,6 +267,8 @@ void mainMenu()
 }
 void clientMenu()
 {
+	///menu for registered clients
+
 	Message m;
 	int choice;
 	do {
@@ -286,6 +306,8 @@ void clientMenu()
 }
 void agentMenu()
 {
+	/// Menu for registered agents
+
 	int choice;
 	do {
 		cout << "\n\n\tPress [1] to Manage clients DB";
@@ -321,6 +343,9 @@ void agentMenu()
 }
 void managerMenu()
 {
+
+	/// Menu for managers
+
 	int choice;
 	Message m;
 
@@ -371,43 +396,43 @@ void managerMenu()
 
 bool userRegistration(UserType t)
 {
-	// allocate and creat the new user
-	User* newClient = new User;
+	// Allocate and create the new user
+	User* newUser = new User;
 	cout << "put the following details:" << endl;
-	cin >> *newClient;
-	newClient->type = t; // asaing the type
+	cin >> *newUser;
+	newUser->type = t; // asaing the type
 
 
-	// write the new cline to the DB
-	if (!writeNewUserToFile(*newClient))
+	// Write the new user to the DB
+	if (!writeNewUserToFile(*newUser))
 	{
 		cout << "\n\tUser already exists! Registeration failed\n";
 
 		return false;
 	}
 
-	//if no user been logged- login the new user
+	//If no user been logged- login the new user
 	if (!user)
-		user = newClient;
+		user = newUser;
 
-	//if everything went well
+	//If everything went well
 	return true;
 
 }
 bool login()
 {
 
-	int id; // details needed to singed in
+	int id; // User's details needed to signed in
 	string password;
 	cout << "please put your id: ";
 	cin >> id;
 	cout << "please put you password: ";
 	cin >> password;
 
-	// creat the new login to the system
+	// Create the new login to the system
 	user = new User;
 
-	// open the users DB to find a match
+	// Open the users DB to find a match
 	ifstream f("UsersDB.txt");
 	while (f >> *user)
 	{
@@ -419,7 +444,7 @@ bool login()
 		}
 	}
 
-	// if no math been founded delete the allocation and close
+	// If no match been found, delete the allocation and close
 	f.close();
 	delete user;
 
@@ -429,8 +454,8 @@ bool login()
 }
 bool logOrRegist()
 {
-	// if no user is looged and and login is needed!
-	// user going to have to select login or regigst
+	// If no user is logged and login or register is needed!
+	// User will have to select login or register to proceed
 	int input;
 	do {
 		cout << "\n\n\tplease select:" << endl;
@@ -444,12 +469,13 @@ bool logOrRegist()
 
 	} while (input != 1 && input != 2);
 
-	// return true if the log been succeful
+	// Return true if the log has been successful
 	return user != nullptr;
 
 }
 bool makeAnOrder(Package& p)
 {
+	// If user is not logged in, they are asked to either create a new account or login to an existing one
 	while (!user)
 	{
 		cout << "\n\tPlease register or login to an existing account:\n";
@@ -459,6 +485,8 @@ bool makeAnOrder(Package& p)
 
 
 	}
+
+	//// Counting number of orders to create a new order id
 
 	Order o;
 	int i = 0;
@@ -471,11 +499,11 @@ bool makeAnOrder(Package& p)
 
 
 
-	// put the the need deatils automatcly
+	// Details are entered automatically
 	Order order = { 1000 + i,today(), p.id, in_process, user->id, 0 };
 	cout << endl << "Summary" << endl << order << endl << p << endl;
 
-	// send user to pay
+	// Send user to payment
 	paymentSystem(p.price);
 
 	ifstream fa("PackagesDB.txt");
@@ -500,17 +528,22 @@ bool makeAnOrder(Package& p)
 
 	ff.close();
 
-	--p.quantity;
+	--p.quantity;   //Package quantity reduced
 
-	// put the new order in the orders DB
+	// Enter the new order to the orders DB
 	ofstream f("OrdersDB.txt", ios::app);
 	f << order;
 	f.close();
+
+	PlaySound(TEXT("notification03.wav"), NULL, SND_FILENAME | SND_ASYNC);
 
 	return 1;
 }
 bool paymentSystem(float price)
 {
+
+	//Here a payment is made and discount is calculated in final price
+
 	int code;
 	string card;
 	float discount = 1;
@@ -531,6 +564,9 @@ bool paymentSystem(float price)
 
 bool addPackage(vector<Package>& arr)
 {
+
+	/// Adding package to package DB
+
 	if (!user || user->type == client)
 		return false;
 
@@ -545,6 +581,10 @@ bool addPackage(vector<Package>& arr)
 }
 bool updatePackage(Package& p)
 {
+
+
+	// Editing an existing package in the package DB
+
 
 	cout << "Put the new details to the package" << endl;
 
@@ -564,7 +604,7 @@ bool updatePackage(Package& p)
 				cout << "Enter flight return date:" << endl;
 				cin >> p.in;
 				if (p.in < p.out)
-					cout <<endl<< "Return date is before departure date, try again!" << endl << endl;
+					cout << endl << "Return date is before departure date, try again!" << endl << endl;
 			} while (p.in < p.out);
 
 		}
@@ -616,6 +656,9 @@ bool updatePackage(Package& p)
 }
 bool removePackage(vector<Package>& arr, string id)
 {
+
+	// Removing an existing package in package DB
+
 	for (int i = 0; i < arr.size(); i++)
 	{
 		if (arr[i].id == id)
@@ -625,6 +668,9 @@ bool removePackage(vector<Package>& arr, string id)
 }
 bool trackPackages(vector<Package>& arr)
 {
+
+	// Here the user sorts packages to view by presented categories
+
 	int ch;
 	Package p;
 	string dest;
@@ -701,6 +747,8 @@ bool trackPackages(vector<Package>& arr)
 bool selectPackageByClient()
 {
 
+	// Here the user can view packages and order them
+
 
 	vector<Package> arr;
 	Package p;
@@ -772,6 +820,9 @@ bool selectPackageByClient()
 
 bool trackOrder(vector<Order>& arr)
 {
+
+	// Here the user can sort existing orders
+
 	Date d;
 	string packId;
 	Status s;
@@ -836,6 +887,8 @@ bool viewClientOrders()
 {
 
 
+	// Here the user can watch their orders and rate it, after being approved, only once!
+
 	int pId;
 	char ch;
 
@@ -896,6 +949,9 @@ bool viewClientOrders()
 }
 bool cancelAnOrder(vector<Order>& arr, int orderId)
 {
+	// Here the user can cancel an existing order, it cannot be approved after being cancelled!
+	// A new order will be required
+
 	string packId = "NONE00";
 	Package p;
 
@@ -935,6 +991,7 @@ bool cancelAnOrder(vector<Order>& arr, int orderId)
 }
 bool approveOrder(vector<Order>& arr, int orderId)
 {
+	// Here the user will approve in proccess orders
 
 	for (int i = 0; i < arr.size(); i++)
 	{
@@ -956,7 +1013,7 @@ bool rateByOrder(vector<Order>& o_arr, int orderId)
 {
 	int packageId;
 
-	// load packages from file
+	// Load packages from file
 	Package tempPackage;
 	vector<Package> p_arr;
 	ifstream rpf("PackagesDB.txt"); // read package file
@@ -1004,16 +1061,21 @@ bool rateByOrder(vector<Order>& o_arr, int orderId)
 }
 bool rateApackage(Package& p)
 {
-	cout << "Enter your rate for this package: ";
-	float temp;
-	cin >> temp;
-	p.rate = (p.rate * p.numOfRates + temp) / (p.numOfRates + 1);
+	int temp;
+	do {
+		cout << "Enter your rate for this package [1-5]: ";
+		
+		cin >> temp;
+	} while (temp < 1 || temp>5);
+		p.rate = (p.rate * p.numOfRates + (float)temp) / (p.numOfRates + 1);
 	p.numOfRates++;
 	return 1;
 }
 
 bool removeUser(UserType t)
 {
+	// Remove existing user
+
 	int input;
 	User u;
 	vector<User> arr;
@@ -1052,6 +1114,8 @@ bool removeUser(UserType t)
 }
 bool manageClientsDB()
 {
+
+	// Here the user can manage client DB
 
 	if ((!user) || (user->type == client))
 		return false;
@@ -1099,6 +1163,8 @@ bool manageClientsDB()
 }
 bool manageOrdersDB()
 {
+	// Here the user can manage order DB
+
 	if ((!user) || (user->type == client))
 		return false;
 
@@ -1203,8 +1269,8 @@ bool managePackagesDB()
 	f.close();
 
 	do {
-		cout << "\n\tPress [1] to sort packages"  << "\n\tPress [2] to add package";
-		cout << "\n\tPress [3] to update package"<< "\n\tPress [4] to remove package";
+		cout << "\n\tPress [1] to sort packages" << "\n\tPress [2] to add package";
+		cout << "\n\tPress [3] to update package" << "\n\tPress [4] to remove package";
 		cout << "\n\tPress [0] to Return" << endl;
 		cin >> ch;
 
@@ -1506,7 +1572,7 @@ bool operator==(Date& d1, Date& d2)
 ostream& operator<<(ofstream& f, User& u)
 {
 	f << u.id << endl;
-	f << enc(u.password )<< endl;
+	f << enc(u.password) << endl;
 	f << enc(u.userName) << endl;
 	f << int(u.type) << endl;
 	return f;
@@ -1572,7 +1638,7 @@ ostream& operator<<(ofstream& f, Order& o)
 	f << o.date << endl;
 	f << o.clientId << endl;
 	f << o.id << endl;
-	f << enc(o.packageId)<< endl;
+	f << enc(o.packageId) << endl;
 	f << o.status << endl;
 	f << o.agentId << endl;
 	f << o.rated << endl;
@@ -1727,12 +1793,16 @@ ostream& operator<<(ofstream& f, Message& m)
 	f << enc(m.sender) << endl;
 	f << m.to << endl;
 	f << enc(m.message) << endl;
+
+	PlaySound(TEXT("notification02.wav"), NULL, SND_FILENAME | SND_ASYNC);
+
 	return f;
 }
 istream& operator>>(ifstream& f, Message& m)
 {
 	f >> m.d;
 	f >> m.sender;
+	m.sender = dec(m.sender);
 	f >> m.to;
 	getline(f, m.message);
 	getline(f, m.message);
@@ -1789,3 +1859,34 @@ istream& operator>>(ifstream& f, Coupon& c)
 }
 
 
+void intro()
+{
+	srand((unsigned)time(0));
+	if ((rand() % 2) == 1)
+		PlaySound(TEXT("startup01.wav"), NULL, SND_FILENAME | SND_ASYNC);
+	else
+		PlaySound(TEXT("startup02.wav"), NULL, SND_FILENAME | SND_ASYNC);
+	cout << PINK << "HHHH "; Sleep(35); cout << MAGENTA << "     HH     "; Sleep(35); cout << YELLOW << "   HHHH "; Sleep(35); cout << GREEN << "  H    H"; Sleep(35); cout << RED << " H   H"; Sleep(35); cout << BLUE << "  H     H" << endl; Sleep(35);
+	cout << PINK << "H   H"; Sleep(35); cout << MAGENTA << "    H  H    "; Sleep(35); cout << YELLOW << "  H    H"; Sleep(35); cout << GREEN << "  H  H  "; Sleep(35); cout << RED << " H   H"; Sleep(35); cout << BLUE << "  H     H" << endl; Sleep(35);
+	cout << PINK << "HHHH "; Sleep(35); cout << MAGENTA << "   H    H   "; Sleep(35); cout << YELLOW << " H      "; Sleep(35); cout << GREEN << "  HH    "; Sleep(35); cout << RED << " HHHHH"; Sleep(35); cout << BLUE << "  H     H" << endl; Sleep(35);
+	cout << PINK << "H    "; Sleep(35); cout << MAGENTA << "  HHHHHHHH  "; Sleep(35); cout << YELLOW << " H      "; Sleep(35); cout << GREEN << "  HH    "; Sleep(35); cout << RED << "     H"; Sleep(35); cout << BLUE << "  H     H" << endl; Sleep(35);
+	cout << PINK << "H    "; Sleep(35); cout << MAGENTA << " H        H "; Sleep(35); cout << YELLOW << "  H    H"; Sleep(35); cout << GREEN << "  H  H  "; Sleep(35); cout << RED << "     H"; Sleep(35); cout << BLUE << "  H     H" << endl; Sleep(35);
+	cout << PINK << "H    "; Sleep(35); cout << MAGENTA << "H          H"; Sleep(35); cout << YELLOW << "   HHHH "; Sleep(35); cout << GREEN << "  H    H"; Sleep(35); cout << RED << "     H"; Sleep(35); cout << BLUE << "   HHHHH " << endl; Sleep(35);
+	for (int i = 0; i < 48; i++)
+	{
+		cout << BLOCKCOLOR << " ";
+		Sleep(13);
+	}
+	cout << WHITE << endl;
+	system("pause");
+}
+void logo()
+{
+	cout << PINK << "HHHH " << MAGENTA << "     HH     " << YELLOW << "   HHHH " << GREEN << "  H    H" << RED << " H   H" << BLUE << "  H     H" << endl;
+	cout << PINK << "H   H" << MAGENTA << "    H  H    " << YELLOW << "  H    H" << GREEN << "  H  H  " << RED << " H   H" << BLUE << "  H     H" << endl;
+	cout << PINK << "HHHH " << MAGENTA << "   H    H   " << YELLOW << " H      " << GREEN << "  HH    " << RED << " HHHHH" << BLUE << "  H     H" << endl;
+	cout << PINK << "H    " << MAGENTA << "  HHHHHHHH  " << YELLOW << " H      " << GREEN << "  HH    " << RED << "     H" << BLUE << "  H     H" << endl;
+	cout << PINK << "H    " << MAGENTA << " H        H " << YELLOW << "  H    H" << GREEN << "  H  H  " << RED << "     H" << BLUE << "  H     H" << endl;
+	cout << PINK << "H    " << MAGENTA << "H          H" << YELLOW << "   HHHH " << GREEN << "  H    H" << RED << "     H" << BLUE << "   HHHHH " << endl;
+	cout << BLOCKCOLOR << "                                                " << WHITE;
+}
