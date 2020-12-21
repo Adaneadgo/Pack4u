@@ -188,7 +188,7 @@ void aboutus()
 	cout << "\n\n\tPack4U has been committed to bringing our clients the best in value and quality travel arrangements.";
 	cout << "\n\tWe are passionate about travel and sharing the world's wonders on the leisure travel side.";
 	cout << "\n\tWe hope you have a great time with out software.";
-	
+
 	int choice;
 	do {
 		cout << "\n\n\tfor more options:\n\t[1] See contact information\n\t[0] Back to the main menu\n\n\t";
@@ -1061,12 +1061,13 @@ bool rateByOrder(vector<Order>& o_arr, int orderId)
 }
 bool rateApackage(Package& p)
 {
+	int temp;
 	do {
 		cout << "Enter your rate for this package [1-5]: ";
-		int temp;
+		
 		cin >> temp;
-	}while(temp<1||temp>5)
-	p.rate = (p.rate * p.numOfRates + (float)temp) / (p.numOfRates + 1);
+	} while (temp < 1 || temp>5);
+		p.rate = (p.rate * p.numOfRates + (float)temp) / (p.numOfRates + 1);
 	p.numOfRates++;
 	return 1;
 }
