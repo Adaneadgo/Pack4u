@@ -217,6 +217,10 @@ void mainMenu()
 	int num, ch;
 	do
 	{
+		
+		delete user;
+		user = NULL;
+
 		system("cls");
 		logo();
 		cout << "\n\n\t[1] View packages";
@@ -230,6 +234,23 @@ void mainMenu()
 		{
 		case 1:
 			selectPackageByClient();
+			if (user)
+			{
+				switch (user->type)
+				{
+				case client:
+					clientMenu();
+					break;
+
+				case agent:
+					agentMenu();
+					break;
+
+				case manager:
+					managerMenu();
+					break;
+				}
+			}
 			break;
 		case 2:
 			logOrRegist();
@@ -456,6 +477,7 @@ bool logOrRegist()
 {
 	// If no user is logged and login or register is needed!
 	// User will have to select login or register to proceed
+	bool flag = false;
 	int input;
 	do {
 		cout << "\n\n\tplease select:" << endl;
@@ -463,14 +485,25 @@ bool logOrRegist()
 		cin >> input;
 
 		if (input == 1)
-			login();
-		if (input == 2)
-			userRegistration(client);
+			flag = login();
+		else if (input == 2)
+			flag = userRegistration(client);
+		else cout << "\n\n\tBad input try again!\n";
 
-	} while (input != 1 && input != 2);
+		if ((input == 1 || input == 2) && !flag)
+		{
+			cout << "\n\tWould you like to try again?\n";
+			cout << "\n\tEnter 1 to try again.\n";
+			cout << "\tEnter any other key to cancel and return.\n";
+			cin >> input;
+			if (input != 1) return false;
+
+		}
+
+	} while (!flag);
 
 	// Return true if the log has been successful
-	return user != nullptr;
+	return true;
 
 }
 bool makeAnOrder(Package& p)
@@ -480,7 +513,7 @@ bool makeAnOrder(Package& p)
 	{
 		cout << "\n\tPlease register or login to an existing account:\n";
 
-		if (logOrRegist())
+		if (!logOrRegist())
 			return false;
 
 
@@ -502,6 +535,8 @@ bool makeAnOrder(Package& p)
 	// Details are entered automatically
 	Order order = { 1000 + i,today(), p.id, in_process, user->id, 0 };
 	cout << endl << "Summary" << endl << order << endl << p << endl;
+
+	system("pause");
 
 	// Send user to payment
 	paymentSystem(p.price);
@@ -537,22 +572,53 @@ bool makeAnOrder(Package& p)
 
 	PlaySound(TEXT("notification03.wav"), NULL, SND_FILENAME | SND_ASYNC);
 
+	system("pause");
+
 	return 1;
 }
 bool paymentSystem(float price)
 {
 
 	//Here a payment is made and discount is calculated in final price
-
+	int input;
 	int code;
 	string card;
 	float discount = 1;
 
-	cout << "Payment system" << endl;
-	cout << "put your coupon code if you have one" << endl;
-	cin >> code;
+	cout << "\tPayment system" << endl;
 
-	discount = readCoupon(code);
+	do
+	{
+		cout << "\n\tIf you have a coupon code enter 1\n";
+		cout << "\tIf not enter 0 to continue\n";
+		cin >> input;
+		
+		switch(input)
+		{
+		case 1:
+			cout << "\tEnter your coupon code:" << endl;
+			cin >> code;
+
+			discount = readCoupon(code);
+
+			if (discount == 1)
+			{
+				cout << "\tWould you like to try again?\n";
+				cout << "\tEnter 0 to continue without coupon\n";
+				cout << "\tEnter any other key to try again\n";
+				cin >> input;
+			}
+			break;
+
+		case 0:
+			break;
+
+		default:
+			cout << "\tBad input! Try again\n";
+			break;
+
+		}
+	} while (input);
 
 	cout << "please put you credit card details:" << endl << "[xxxxxxxx]  [mm/yy]  [cvc]" << endl;
 	cin >> card;
@@ -679,6 +745,7 @@ bool trackPackages(vector<Package>& arr)
 
 	do
 	{
+		
 
 		cout << "\n\tPress [1] to sort by destination" << endl;
 		cout << "\n\tPress [2] to sort by price range" << endl;
@@ -686,6 +753,9 @@ bool trackPackages(vector<Package>& arr)
 		cout << "\n\tPress [4] to Popular Packages" << endl;
 		cout << "\n\tPress [0] to Exit" << endl << endl;
 		cin >> ch;
+
+		if (ch)
+		system("cls");
 
 		switch (ch)
 		{
