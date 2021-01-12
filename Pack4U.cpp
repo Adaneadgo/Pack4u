@@ -203,7 +203,7 @@ void aboutus()
 			break;
 
 		default:
-			cout << "\n\n\tTRY AGAIN";
+			cout << RED << "\n\n\tTRY AGAIN" << WHITE;
 			break;
 		}
 	} while (choice != 0);
@@ -223,11 +223,11 @@ void mainMenu()
 
 		system("cls");
 		logo();
-		cout << "\n\n\t[1] View packages";
+		cout << MAGENTA << "\n\n\t[1] View packages";
 		cout << "\n\n\t[2] Login/Register";
 		cout << "\n\n\t[3] About Us";
 		cout << "\n\n\t[0] EXIT";
-		cout << "\n\n\tSelect Your Option [0-3] " << endl;;
+		cout << "\n\n\tSelect Your Option [0-3] " << endl<<WHITE;;
 		cin >> ch;
 		system("cls");
 		switch (ch)
@@ -280,7 +280,7 @@ void mainMenu()
 			cout << "\n\n\tThanks for using our system";
 			break;
 		default:
-			cout << "Bad input! Try again" << endl << endl;
+			cout << RED << "Bad input! Try again" << endl << endl << WHITE;
 		}
 	} while (ch != 0);
 
@@ -293,11 +293,11 @@ void clientMenu()
 	Message m;
 	int choice;
 	do {
-		cout << "\n\n\tPress [1] to view packages";
+		cout << MAGENTA << "\n\n\tPress [1] to view packages";
 		cout << "\n\n\tPress [2] to contact us";
 		cout << "\n\n\tPress [3] to my order and rate";
 		cout << "\n\n\tPress [4] to my Message box";
-		cout << "\n\n\tPress [0] to exit" << endl;
+		cout << "\n\n\tPress [0] to exit" << endl << WHITE;
 		cin >> choice;
 		system("cls");
 		switch (choice)
@@ -319,7 +319,7 @@ void clientMenu()
 			showMessagesFromManeger(client);
 			break;
 		default:
-			cout << "\n\n\tTRY AGAIN";
+			cout << RED << "\n\n\tTRY AGAIN" << WHITE;
 			break;
 		}
 	} while (choice != 0);
@@ -331,12 +331,12 @@ void agentMenu()
 
 	int choice;
 	do {
-		cout << "\n\n\tPress [1] to Manage clients DB";
+		cout << MAGENTA << "\n\n\tPress [1] to Manage clients DB";
 		cout << "\n\n\tPress [2] to Manage orders DB";
 		cout << "\n\n\tPress [3] to Mangae packages DB";
 		cout << "\n\n\tPress [4] to Message box";
 		cout << "\n\n\tPress [5] to Clients requests";
-		cout << "\n\n\tPress [0] to Exit";
+		cout << "\n\n\tPress [0] to Exit" << WHITE;
 		cin >> choice;
 		system("cls");
 		switch (choice)
@@ -357,7 +357,7 @@ void agentMenu()
 			requestsFromClient();
 			break;
 		default:
-			cout << "\n\n\tTRY AGAIN";
+			cout << RED << "\n\n\tTRY AGAIN" << WHITE;
 			break;
 		}
 	} while (choice != 0);
@@ -371,13 +371,13 @@ void managerMenu()
 	Message m;
 
 	do {
-		cout << "\n\n\tPress [1] to View Agent Options";
+		cout << MAGENTA << "\n\n\tPress [1] to View Agent Options";
 		cout << "\n\n\tPress [2] to Add an agent";
 		cout << "\n\n\tPress [3] to Remove an agent";
 		cout << "\n\n\tPress [4] to Create discount coupon and send to clients";
 		cout << "\n\n\tPress [5] to Send a general message to all agents";
 		cout << "\n\n\tPress [6] Load the system Administrator only!";
-		cout << "\n\n\tPress [0] to Exit" << endl;
+		cout << "\n\n\tPress [0] to Exit" << endl << WHITE;
 		cin >> choice;
 		system("cls");
 		switch (choice)
@@ -409,7 +409,7 @@ void managerMenu()
 			//////////
 			break;
 		default:
-			cout << "\n\n\tTRY AGAIN";
+			cout << RED << "\n\n\tTRY AGAIN" << WHITE;
 			break;
 		}
 	} while (choice != 0);
@@ -427,7 +427,7 @@ bool userRegistration(UserType t)
 	// Write the new user to the DB
 	if (!writeNewUserToFile(*newUser))
 	{
-		cout << "\n\tUser already exists! Registeration failed\n";
+		cout << RED << "\n\tUser already exists! Registeration failed\n" << WHITE;
 
 		return false;
 	}
@@ -480,15 +480,15 @@ bool logOrRegist()
 	bool flag = false;
 	int input;
 	do {
-		cout << "\n\n\tplease select:" << endl;
-		cout << "\n\n\t[1] Login" << "\n\n\t[2] Register" << endl;
+		cout << MAGENTA << "\n\n\tplease select:" << endl;
+		cout << "\n\n\t[1] Login" << "\n\n\t[2] Register" << endl << WHITE;
 		cin >> input;
 
 		if (input == 1)
 			flag = login();
 		else if (input == 2)
 			flag = userRegistration(client);
-		else cout << "\n\n\tBad input try again!\n";
+		else cout << RED << "\n\n\tBad input try again!\n" << WHITE;
 
 		if ((input == 1 || input == 2) && !flag)
 		{
@@ -614,7 +614,7 @@ bool paymentSystem(float price)
 			break;
 
 		default:
-			cout << "\tBad input! Try again\n";
+			cout << RED << "\tBad input! Try again\n" << WHITE;
 			break;
 
 		}
@@ -670,7 +670,7 @@ bool updatePackage(Package& p)
 				cout << "Enter flight return date:" << endl;
 				cin >> p.in;
 				if (p.in < p.out)
-					cout << endl << "Return date is before departure date, try again!" << endl << endl;
+					cout << endl << RED << "Return date is before departure date, try again!" << endl << endl << WHITE;
 			} while (p.in < p.out);
 
 		}
@@ -684,7 +684,7 @@ bool updatePackage(Package& p)
 			break;
 		}
 		else
-			cout << "Bad input! Try again." << endl;
+			cout << RED << "Bad input! Try again." << endl << WHITE;
 	} while (ch != 'Y');
 
 	do
@@ -708,7 +708,7 @@ bool updatePackage(Package& p)
 			break;
 		}
 		else
-			cout << "Bad input! Try again." << endl;
+			cout << RED << "Bad input! Try again." << endl << WHITE;
 
 	} while (ch != 'Y');
 
@@ -747,11 +747,11 @@ bool trackPackages(vector<Package>& arr)
 	{
 		
 
-		cout << "\n\tPress [1] to sort by destination" << endl;
+		cout << MAGENTA << "\n\tPress [1] to sort by destination" << endl;
 		cout << "\n\tPress [2] to sort by price range" << endl;
 		cout << "\n\tPress [3] to sort by departure date" << endl;
 		cout << "\n\tPress [4] to Popular Packages" << endl;
-		cout << "\n\tPress [0] to Exit" << endl << endl;
+		cout << "\n\tPress [0] to Exit" << endl << endl << WHITE;
 		cin >> ch;
 
 		if (ch)
@@ -806,7 +806,7 @@ bool trackPackages(vector<Package>& arr)
 			break;
 
 		default:
-			cout << "Wrong key!" << endl;
+			cout << RED << "Wrong key!" << endl << WHITE;
 			break;
 		}
 
@@ -842,9 +842,9 @@ bool selectPackageByClient()
 	{
 
 
-		cout << "\n\tPress [1] to make an order" << endl;
+		cout << MAGENTA << "\n\tPress [1] to make an order" << endl;
 		cout << "\n\tPress [2] to sort the packages" << endl;
-		cout << "\n\tpress [0] to return" << endl;
+		cout << "\n\tpress [0] to return" << endl << WHITE;
 		cin >> ch;
 
 
@@ -877,7 +877,7 @@ bool selectPackageByClient()
 			break;
 
 		default:
-			cout << "Wrong key!" << endl;
+			cout << RED << "Wrong key!" << endl << WHITE;
 			break;
 		}
 
@@ -901,9 +901,9 @@ bool trackOrder(vector<Order>& arr)
 	int userChoise;
 
 	do {
-		cout << "\n\tView Orders By:" << endl;
+		cout << MAGENTA << "\n\tView Orders By:" << endl;
 		cout << "\n\tPress [1] to sort by date" << endl << "\n\tPress [2] to sort by package" << endl;
-		cout << "\n\tPress [3] to sort by status" << endl << "\n\tPress [0] to return" << endl;
+		cout << "\n\tPress [3] to sort by status" << endl << "\n\tPress [0] to return" << endl << WHITE;
 		cin >> userChoise;
 
 		switch (userChoise)
@@ -930,8 +930,8 @@ bool trackOrder(vector<Order>& arr)
 			break;
 		case 3:
 
-			cout << "\n\tSelect the status: ";
-			cout << "\n\tPress [1] to 'Canceld'" << "\n\tPress [2] to 'In Processes'" << "\n\tPress [3] to 'Approved'" << endl;
+			cout << MAGENTA << "\n\tSelect the status: ";
+			cout << "\n\tPress [1] to 'Canceld'" << "\n\tPress [2] to 'In Processes'" << "\n\tPress [3] to 'Approved'" << endl << WHITE;
 			cin >> userChoise;
 			s = Status(userChoise - 1);
 			for (int i = 0; i < arr.size(); i++)
@@ -945,7 +945,7 @@ bool trackOrder(vector<Order>& arr)
 			break;
 
 		default:
-			cout << "Wrong key!" << endl;
+			cout << RED << "Wrong key!" << endl << WHITE;
 			break;
 		}
 
@@ -1204,8 +1204,8 @@ bool manageClientsDB()
 		}
 		f.close();
 
-		cout << "\n\n\tSelect: " << "\n\t[1] Add client";
-		cout << "\n\t[2] Remove client" << endl << "\n\t[0] Return" << endl;
+		cout << MAGENTA << "\n\n\tSelect: " << "\n\t[1] Add client";
+		cout << "\n\t[2] Remove client" << endl << "\n\t[0] Return" << endl << WHITE;
 		cin >> ch;
 
 		switch (ch)
@@ -1221,7 +1221,7 @@ bool manageClientsDB()
 			break;
 
 		default:
-			cout << "\n\tBad input! Try again" << endl;
+			cout << RED << "\n\tBad input! Try again" << endl << WHITE;
 			break;
 
 
@@ -1258,9 +1258,9 @@ bool manageOrdersDB()
 				cout << endl << arr[i] << endl << endl;
 		}
 
-		cout << "\n\tPress [1] to sort Orders" << "\n\tPress [2] to approve orders";
+		cout << MAGENTA << "\n\tPress [1] to sort Orders" << "\n\tPress [2] to approve orders";
 		cout << "\n\tPress [3] to cancel Orders" << "\n\tPress [4] add new orders";
-		cout << "\n\tPress [0] to return to last page" << endl;
+		cout << "\n\tPress [0] to return to last page" << endl << WHITE;
 		cin >> ch;
 
 		switch (ch)
@@ -1305,7 +1305,7 @@ bool manageOrdersDB()
 			break;
 
 		default:
-			cout << "Wrong key!" << endl;
+			cout << RED << "Wrong key!" << endl << WHITE;
 
 		}
 
@@ -1339,9 +1339,9 @@ bool managePackagesDB()
 	f.close();
 
 	do {
-		cout << "\n\tPress [1] to sort packages" << "\n\tPress [2] to add package";
+		cout << MAGENTA << "\n\tPress [1] to sort packages" << "\n\tPress [2] to add package";
 		cout << "\n\tPress [3] to update package" << "\n\tPress [4] to remove package";
-		cout << "\n\tPress [0] to Return" << endl;
+		cout << "\n\tPress [0] to Return" << endl << WHITE;
 		cin >> ch;
 
 		switch (ch)
@@ -1377,7 +1377,7 @@ bool managePackagesDB()
 			break;
 
 		default:
-			cout << "Wrong key!" << endl;
+			cout << RED << "Wrong key!" << endl << WHITE;
 
 		}
 
@@ -1568,7 +1568,7 @@ float readCoupon(int code)
 		}
 	}
 
-	cout << "Invaild code!" << endl;
+	cout << RED << "Invaild code!" << endl << WHITE;
 	return 1;
 
 }
@@ -1660,18 +1660,18 @@ istream& operator>>(ifstream& f, User& u)
 ostream& operator<<(ostream& os, User& u)
 {
 	os << strUserType(u.type);
-	os << " Name: " << u.userName << endl;
-	os << "Id: " << u.id << endl;
+	os << YELLOW << " Name: " << WHITE << u.userName << endl;
+	os << YELLOW << "Id: " << WHITE << u.id << endl;
 	return os;
 }
 istream& operator>>(istream& is, User& u)
 {
 	// getting the new user  details
-	cout << "Id: ";
+	cout << BLUE << "Id: " << WHITE;
 	is >> u.id;
-	cout << "Password ";
+	cout << BLUE << "Password " << WHITE;
 	is >> u.password;
-	cout << "UserName: ";
+	cout << BLUE << "UserName: " << WHITE;
 	is >> u.userName;
 	return is;
 }
@@ -1693,12 +1693,12 @@ istream& operator>>(ifstream& f, Status& u)
 
 ostream& operator<<(ostream& os, Order& o)
 {
-	os << "Date: " << o.date << endl;
-	os << "Client Id: " << o.clientId << endl;
-	os << "Agent id: " << o.agentId << endl;
-	os << "Order Id: " << o.id << endl;
-	os << "Package Id: " << o.packageId << endl;
-	os << "Order status: " << strStatus(o.status);
+	os << YELLOW << "Date: " << WHITE << o.date << endl;
+	os << YELLOW << "Client Id: " << WHITE << o.clientId << endl;
+	os << YELLOW << "Agent id: " << WHITE << o.agentId << endl;
+	os << YELLOW << "Order Id: " << WHITE << o.id << endl;
+	os << YELLOW << "Package Id: " << WHITE << o.packageId << endl;
+	os << YELLOW << "Order status: " << WHITE << strStatus(o.status);
 	return os;
 
 }
@@ -1763,16 +1763,16 @@ istream& operator>>(istream& is, Date& d)
 	do
 	{
 		flag = true;
-		cout << "day: ";
+		cout << BLUE << "day: " << WHITE;
 		is >> d.day;
-		cout << "month: ";
+		cout << BLUE << "month: " << WHITE;
 		is >> d.month;
-		cout << "year: ";
+		cout << BLUE << "year: " << WHITE;
 		is >> d.year;
 
 		if (d < t || d.day>31 || d.day < 1 || d.month < 1 || d.month>12 || d.year < t.year)
 		{
-			cout << "\n\n\tInvalid date! Try again\n\n";
+			cout << RED << "\n\n\tInvalid date! Try again\n\n" << WHITE;
 			flag = false;
 		}
 	} while (!flag);
@@ -1782,15 +1782,15 @@ istream& operator>>(istream& is, Date& d)
 
 ostream& operator<<(ostream& os, Package& p)
 {
-	os << "Package id: " << p.id << endl;
-	os << "Package price: " << p.price << endl;
-	os << "Package quantity: " << p.quantity << endl;
-	os << "Flight destination: " << p.f.destination << endl;
-	os << "Flight departure: " << p.out << endl;
-	os << "Flight return " << p.in << endl;
-	os << "Hotel name: " << p.h.name << endl;
-	os << "Hotel Address: " << p.h.address << endl;
-	os << "Package rating: " << p.rate << " out of: " << p.numOfRates << " Ratings." << endl;
+	os << YELLOW << "Package id: " << WHITE << p.id << endl;
+	os << YELLOW << "Package price: " << WHITE << p.price << endl;
+	os << YELLOW << "Package quantity: " << WHITE << p.quantity << endl;
+	os << YELLOW << "Flight destination: " << WHITE << p.f.destination << endl;
+	os << YELLOW << "Flight departure: " << WHITE << p.out << endl;
+	os << YELLOW << "Flight return " << WHITE << p.in << endl;
+	os << YELLOW << "Hotel name: " << WHITE << p.h.name << endl;
+	os << YELLOW << "Hotel Address: " << WHITE << p.h.address << endl;
+	os << YELLOW << "Package rating: " << WHITE << p.rate << YELLOW << " out of: " << WHITE << p.numOfRates << YELLOW << " Ratings." << WHITE << endl;
 	return os;
 }
 ofstream& operator<<(ofstream& f, Package& p)
@@ -1823,13 +1823,13 @@ istream& operator>>(istream& is, Package& p)
 	do
 	{
 		flag = true;
-		cout << "\n\tEnter package id: ";
+		cout << BLUE << "\n\tEnter package id: " << WHITE;
 		is >> p.id;
 
 		for (int i = 0; i < arr.size(); ++i)
 			if (p.id == arr[i].id || !flag)
 			{
-				cout << "\n\t Package ID already exists! Try again\n";
+				cout << RED << "\n\t Package ID already exists! Try again\n" << WHITE;
 				flag = false;
 			}
 	} while (!flag);
@@ -1881,16 +1881,16 @@ istream& operator>>(ifstream& f, Message& m)
 }
 ostream& operator<<(ostream& os, Message& m)
 {
-	os << "Sent at: " << m.d << endl;
-	os << "From: " << m.sender << endl;
-	os << "Body message: " << m.message;
+	os << YELLOW << "Sent at: " << WHITE << m.d << endl;
+	os << YELLOW << "From: " << WHITE << m.sender << endl;
+	os << YELLOW << "Body message: " << WHITE << m.message;
 	return os;
 }
 istream& operator>>(istream& is, Message& m)
 {
 	m.d = today();
 	m.sender = user->userName;
-	cout << "Body message: ";
+	cout << BLUE << "Body message: " << WHITE;
 	cin.ignore();
 	getline(is, m.message);
 	return is;
@@ -1898,18 +1898,18 @@ istream& operator>>(istream& is, Message& m)
 
 ostream& operator<<(ostream& os, Coupon& c)
 {
-	os << "Cupon code: " << c.couponCode << endl;
-	os << "Discount amount: " << c.discount << endl;
-	os << "Expiry date: " << c.expiry << endl;
+	os << YELLOW << "Cupon code: " << WHITE << c.couponCode << endl;
+	os << YELLOW << "Discount amount: " << WHITE << c.discount << endl;
+	os << YELLOW << "Expiry date: " << WHITE << c.expiry << endl;
 	return os;
 }
 istream& operator>>(istream& is, Coupon& c)
 {
-	cout << "Hello manager, please enter code for discount (4 digits): " << endl;
+	cout << BLUE << "Hello manager, please enter code for discount (4 digits): " << WHITE << endl;
 	is >> c.couponCode;
-	cout << "Please enter discount amount: " << endl;
+	cout << BLUE << "Please enter discount amount: " << WHITE << endl;
 	is >> c.discount;
-	cout << "Enter day, month and year for expiry date: " << endl;
+	cout << BLUE << "Enter day, month and year for expiry date: " << WHITE << endl;
 	is >> c.expiry;
 	return is;
 }
