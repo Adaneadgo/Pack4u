@@ -1,0 +1,5 @@
+﻿  Source.cpp
+C:\Users\adane\Desktop\yesodot\PROJECT_ALL_FILES\Pack4u\Project1\Source.cpp(218,6): warning C4101: 'num': unreferenced local variable
+C:\Users\adane\Desktop\yesodot\PROJECT_ALL_FILES\Pack4u\Project1\Source.cpp(1085,6): warning C4101: 'packageId': unreferenced local variable
+C:\Users\adane\Desktop\yesodot\PROJECT_ALL_FILES\Pack4u\Project1\Source.cpp(1632): warning C4715: 'operator<': not all control paths return a value
+  Project1.vcxproj -> C:\Users\adane\Desktop\yesodot\PROJECT_ALL_FILES\Pack4u\Project1\x64\Debug\Project1.exe
