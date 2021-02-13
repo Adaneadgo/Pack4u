@@ -218,7 +218,7 @@ void mainMenu()
 	int num, ch;
 	do
 	{
-		
+
 		delete user;
 		user = NULL;
 
@@ -228,7 +228,11 @@ void mainMenu()
 		cout << "\n\n\t[2] Login/Register";
 		cout << "\n\n\t[3] About Us";
 		cout << "\n\n\t[0] EXIT";
+<<<<<<< Updated upstream
 		cout << "\n\n\tSelect Your Option [0-3] " << endl<<WHITE;;
+=======
+		cout << "\n\n\tSelect Your Option [0-3] " << endl << WHITE;;
+>>>>>>> Stashed changes
 		cin >> ch;
 		system("cls");
 		switch (ch)
@@ -593,8 +597,8 @@ bool paymentSystem(float price)
 		cout << "\n\tIf you have a coupon code enter 1\n";
 		cout << "\tIf not enter 0 to continue\n";
 		cin >> input;
-		
-		switch(input)
+
+		switch (input)
 		{
 		case 1:
 			cout << "\tEnter your coupon code:" << endl;
@@ -746,8 +750,11 @@ bool trackPackages(vector<Package>& arr)
 
 	do
 	{
-		
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 		cout << MAGENTA << "\n\tPress [1] to sort by destination" << endl;
 		cout << "\n\tPress [2] to sort by price range" << endl;
 		cout << "\n\tPress [3] to sort by departure date" << endl;
@@ -756,7 +763,7 @@ bool trackPackages(vector<Package>& arr)
 		cin >> ch;
 
 		if (ch)
-		system("cls");
+			system("cls");
 
 		switch (ch)
 		{
@@ -1135,10 +1142,10 @@ bool rateApackage(Package& p)
 	int temp;
 	do {
 		cout << "Enter your rate for this package [1-5]: ";
-		
+
 		cin >> temp;
 	} while (temp < 1 || temp>5);
-		p.rate = (p.rate * p.numOfRates + (float)temp) / (p.numOfRates + 1);
+	p.rate = (p.rate * p.numOfRates + (float)temp) / (p.numOfRates + 1);
 	p.numOfRates++;
 	return 1;
 }
